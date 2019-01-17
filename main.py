@@ -29,3 +29,4 @@ for step in range(2, 20):
 for frame in sorted(holder, key=lambda frame: frame.efficiency, reverse=True)[:100]:
     print('{:3.2f} {:3.0f} {:3.0f}  {}'.format(frame.efficiency,
                                                frame.duration, frame.vac, frame))
+
