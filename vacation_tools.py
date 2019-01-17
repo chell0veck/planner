@@ -30,7 +30,12 @@ class Planner:
 
     def match_events(self):
         matches = list((event for event in self._events if self.start < event.date < self.end))
-        return len(matches)
+
+        return matches
+
+    def get_prediction(self):
+        pass
+
 
     @property
     def start(self):
@@ -65,8 +70,3 @@ class Predictor:
         ols_reg = sm.OLS(y, X).fit()
         prediction = ols_reg.predict([[1, self.vacation, self.duration, self.events]])
         return round(*prediction, 2)
-
-
-p = Predictor(15, 18, 1)
-
-print(p.predict())

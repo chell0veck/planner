@@ -5,8 +5,6 @@ import statsmodels.formula.api as sm
 from statsmodels.api import add_constant
 import pandas as pd
 
-import itertools
-
 
 dataset = pd.read_excel('learn_dataset.xlsx', index_col=0, header=0)
 X = dataset.iloc[:, :-1].values
@@ -20,11 +18,8 @@ lin_reg.fit(X_train, y_train)
 ols_reg = sm.OLS(y, X).fit()
 
 lin_pred = lin_reg.predict(X_test)
-# ols_pred = ols_reg.predict(X_test)
-
 ols_pred = ols_reg.predict([[1, 1, 18, 5]])
 
-print(round(*ols_pred, 2))
 
 """
 [[ 1. 15. 18.  1.]
