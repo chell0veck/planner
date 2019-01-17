@@ -1,4 +1,8 @@
 import datetime as dt
+from sklearn.model_selection import train_test_split
+import statsmodels.formula.api as sm
+from statsmodels.api import add_constant
+import pandas as pd
 
 
 class Event:
@@ -44,3 +48,25 @@ class Planner:
 
     def __str__(self):
         return '{} - {}'.format(self.start.strftime('%a %b-%d'), self.end.strftime('%a %b-%d'))
+
+
+class Predictor:
+
+    def __init__(self, vacation, duration, events):
+        self.vacation = vacation
+        self.duration = duration
+        self.events = events
+
+    def predict(self):
+        dataset = pd.read_excel('learn_dataset.xlsx', index_col=0, header=0)
+        X = dataset.iloc[:, :-1].values
+        y = dataset.iloc[:, -1:].values
+        X = add_constant(X)
+        ols_reg = sm.OLS(y, X).fit()
+        prediction = ols_reg.predict([[1, self.vacation, self.duration, self.events]])
+        return round(*prediction, 2)
+
+
+p = Predictor(15, 18, 1)
+
+print(p.predict())
