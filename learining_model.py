@@ -1,24 +1,23 @@
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+from sklearn import linear_model
 import statsmodels.formula.api as sm
 from statsmodels.api import add_constant
 import pandas as pd
+from sklearn.metrics import confusion_matrix
+
 
 
 dataset = pd.read_excel('learn_dataset.xlsx', index_col=0, header=0)
 X = dataset.iloc[:, :-1].values
 y = dataset.iloc[:, -1:].values
-X = add_constant(X)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-lin_reg = LinearRegression()
-lin_reg.fit(X_train, y_train)
-ols_reg = sm.OLS(y, X).fit()
-
-lin_pred = lin_reg.predict(X_test)
-ols_pred = ols_reg.predict([[1, 1, 18, 5]])
+lm = linear_model.LinearRegression()
+model = lm.fit(X,y)
+predictions = lm.predict(X)
+print(lm.score(X, y))
 
 
 """

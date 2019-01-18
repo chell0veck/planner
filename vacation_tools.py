@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 import statsmodels.formula.api as sm
 from statsmodels.api import add_constant
 import pandas as pd
+import itertools
 
 
 class Event:
@@ -29,9 +30,22 @@ class Planner:
         self.efficiency = round(self.non_work/self.duration, 2)
 
     def match_events(self):
-        matches = list((event for event in self._events if self.start < event.date < self.end))
+        matches = (event for event in self._events if self.start < event.date < self.end)
 
         return matches
+
+    def parse_matches(self):
+        result = []
+        lonly = list(self.match_events())
+        unique_artists = len(set(event.artist for event in lonly))
+        intersect =itertools.combinations(lonly, unique_artists)
+
+        for events in intersect:
+
+            if len(set(event.artist for event in events)) == unique_artists and len(set(event.date for event in events)) == unique_artists:
+                print(events)
+
+
 
     def get_prediction(self):
         pass

@@ -30,7 +30,10 @@ from data_source import events_2019, nonwork, holidays
 #     print('{:3.2f} {:3.0f} {:3.0f}  {}'.format(frame.efficiency,
 #                                                frame.duration, frame.vac, frame))
 
-start = dt.date(2019, 6, 18)
-step = 10
+start = dt.date(2019, 6, 8)
+step = 19
 p = Planner(start, step, nonwork, events_2019)
-print(p.match_events())
+events = p.parse_matches()
+
+# for event in events:
+#     print(event)
