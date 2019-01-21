@@ -36,15 +36,30 @@ PHC = [((2019, 6, 2), 'Vienna, AT', 'Ernst Happel Stadion'), ((2019, 6, 4), 'Lyo
        ((2019, 6, 24), 'Munich, DE', 'Olympiastadion'), ((2019, 6, 25), 'Prague, CZ', 'O2 Arena'),
        ((2019, 6, 26), 'Warsaw, PL', 'PGE Narodowy')]
 
+MONO = [('Mono', (2019, 4, 11), 'Tilburg, NL', 'Roadburn Festival 2019'), ('Mono', (2019, 4, 14), 'Bochum, DE', 'Rotunde'),
+        ('Mono', (2019, 4, 15), 'Berlin, DE', 'BiNuu'), ('Mono', (2019, 4, 16), 'Gdansk, PL', 'B90'),
+        ('Mono', (2019, 4, 17), 'Warsaw, PL', 'Hydrozagadka'), ('Mono', (2019, 4, 18), 'Krakow, PL', 'Zet Pe Te'),
+        ('Mono', (2019, 4, 19), 'Prague, CZ', 'Underdogs'), ('Mono', (2019, 4, 20), 'Vienna, AT', 'Szene'),
+        ('Mono', (2019, 4, 21), 'Budapest, HU', 'Durer Kert'), ('Mono', (2019, 4, 23), 'Sofia, BG', 'Mixtape5'),
+        ('Mono', (2019, 4, 25), 'Zagreb, HR', 'Mochvara'), ('Mono', (2019, 4, 26), 'Ljubljana, SI', 'Kino Siska'),
+        ('Mono', (2019, 4, 27), 'Bologna, IT', 'TPO'), ('Mono', (2019, 4, 28), 'Zurich, CH', 'Bogen F'),
+        ('Mono', (2019, 4, 29), 'Munich, DE', 'Strom'), ('Mono', (2019, 4, 30), 'Karlsruhe, DE', 'Jubez'),
+        ('Mono', (2019, 5, 2), 'Leipzig, DE', 'UT Connewitz'), ('Mono', (2019, 5, 3), 'Arlon, BE', 'Aralunaires'),
+        ('Mono', (2019, 5, 4), 'Brighton, UK', 'The Haunt'), ('Mono', (2019, 5, 5), 'Leicester, UK', 'Handmade Festival'),
+        ('Mono', (2019, 5, 6), 'Manchester, UK', 'Gorilla')]
+
 holidays = [dt.date(*i) for i in HOLS]
 TOOL = [('TOOL', dt.date(*i[0]), i[1], i[2]) for i in TOOL]
 CBP = [('CBP', dt.date(*i[0]), i[1], i[2]) for i in CBP]
 PHC = [('PHIL', dt.date(*i[0]), i[1], i[2]) for i in PHC]
+MONO = [(i[0], dt.date(*i[1]), i[2], i[3]) for i in MONO]
 
-events_2019 = TOOL + CBP + PHC
-weekends = [(dt.date(2019, 1, 1) + dt.timedelta(i)) for i in range(365)
-               if (dt.date(2019, 1, 1) + dt.timedelta(i)).weekday() in (5, 6)]
+weekends = [(dt.date(2019, 1, 1) + dt.timedelta(i)) for i in range(365) if (dt.date(2019, 1, 1) + dt.timedelta(i)).weekday() in (5, 6)]
 
 nonwork = holidays + weekends
+events_2019 = TOOL + CBP + PHC + MONO
+
+
+
 
 

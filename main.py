@@ -1,39 +1,26 @@
 import datetime as dt
+from itertools import combinations
 
 from vacation_tools import Planner
 from data_source import events_2019, nonwork, holidays
 
+holder = []
+tracked = []
 
-# start = dt.date(2019, 6, 18)
-# step = 10
-#
-# for take_into_account in [None, holidays, nonwork]:
-#     f = Planner(start, step, take_into_account, events_2019)
-#     print('{:.2f} : {:3.0f} : {:3.0f} : {}'.format(f.efficiency, f.duration, f.match_events(), f))
+for s in range(3, 15):
+    for d in range(365):
+        start = dt.date(2019, 1, 1) + dt.timedelta(d)
+        p = Planner(start, s, nonwork, events_2019)
+        f = (p.start, p.end)
 
-#
-# holder = []
-# tracked = []
-#
-# for step in range(2, 20):
-#     for d in range(365):
-#         start = dt.date(2019, 1, 1) + dt.timedelta(d)
-#         p = Planner(start, step, nonwork, events_2019)
-#         f = (p.start, p.end)
-#
-#         if f not in tracked and p.duration > 2\
-#                 and (p.duration, p.vac) not in ((3, 1), (4, 2)):
-#             holder.append(p)
-#             tracked.append(f)
-#
-# for frame in sorted(holder, key=lambda frame: frame.efficiency, reverse=True)[:100]:
-#     print('{:3.2f} {:3.0f} {:3.0f}  {}'.format(frame.efficiency,
-#                                                frame.duration, frame.vac, frame))
+        if f not in tracked and p.duration > 2\
+                and (p.duration, p.vac) not in ((3, 1), (4, 2)):
+            holder.append(p)
+            tracked.append(f)
 
-start = dt.date(2019, 6, 8)
-step = 19
-p = Planner(start, step, nonwork, events_2019)
-events = p.parse_matches()
 
-# for event in events:
-#     print(event)
+HEADER = 'dur  vac  e           frame'
+print(HEADER)
+for frame in sorted(holder, key=lambda frame: frame.start):
+    if frame.events_num > 0:
+        print('{:3.0f} {:3.0f} {:3.0f}  {}'.format(frame.duration, frame.vac, frame.events_num, frame))
