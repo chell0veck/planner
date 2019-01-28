@@ -1,26 +1,29 @@
-import datetime as dt
-from itertools import combinations
 
-from vacation_tools import Planner
-from data_source import events_2019, nonwork, holidays
-
-holder = []
-tracked = []
-
-for s in range(3, 15):
-    for d in range(365):
-        start = dt.date(2019, 1, 1) + dt.timedelta(d)
-        p = Planner(start, s, nonwork, events_2019)
-        f = (p.start, p.end)
-
-        if f not in tracked and p.duration > 2\
-                and (p.duration, p.vac) not in ((3, 1), (4, 2)):
-            holder.append(p)
-            tracked.append(f)
+from vacation_tools import Framer, fetch_events
+from data_source import nonwork
+import datetime
 
 
-HEADER = 'dur  vac  e           frame'
-print(HEADER)
-for frame in sorted(holder, key=lambda frame: frame.start):
-    if frame.events_num > 0:
-        print('{:3.0f} {:3.0f} {:3.0f}  {}'.format(frame.duration, frame.vac, frame.events_num, frame))
+artist = {'MONO': 201140, 'TOOL': 521019, 'PHIL': 495060,  'CBP': 78386}
+events = fetch_events(artist)
+
+
+def default_test_model():
+    output = []
+
+    for day in range(365):
+        start = datetime.date(2019, 1, 1) + datetime.timedelta(day)
+
+        for step in range(3, 20):
+            p = Framer(start, step, nonwork, events)
+            if p.efficiency > 0.5 and p.events_num == 2:
+                output.append(p)
+
+    return output
+
+
+l = default_test_model()
+
+
+for p in l:
+    print('{} - {:2} - {:2} - {:2} - {:4} - {}'.format(p, p.vac, p.duration, p.events_num, p.efficiency, p.view_events()))
