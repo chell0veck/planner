@@ -1,11 +1,13 @@
 import datetime
 
-from vacation_tools import events_fetcher, events_framer
+from vacation_tools import events_framer
 from data_source import nonwork
+import pickle
+import time
 
 
 artists = {'MONO': 201140, 'TOOL': 521019, 'PHIL': 495060,  'CBP': 78386}
-events = events_fetcher(artists)
+events = pickle.load(open('events.p', 'rb'))
 
 
 def default_test_model():
@@ -20,9 +22,9 @@ def default_test_model():
 
     return all_frames
 
-
 if __name__ == '__main__':
     frames = default_test_model()
 
     for frame in frames:
         print(frame)
+        time.sleep(.005)
