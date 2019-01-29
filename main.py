@@ -1,29 +1,28 @@
-
-from vacation_tools import Framer, fetch_events
-from data_source import nonwork
 import datetime
 
+from vacation_tools import events_fetcher, events_framer
+from data_source import nonwork
 
-artist = {'MONO': 201140, 'TOOL': 521019, 'PHIL': 495060,  'CBP': 78386}
-events = fetch_events(artist)
+
+artists = {'MONO': 201140, 'TOOL': 521019, 'PHIL': 495060,  'CBP': 78386}
+events = events_fetcher(artists)
 
 
 def default_test_model():
-    output = []
+    all_frames = []
 
     for day in range(365):
         start = datetime.date(2019, 1, 1) + datetime.timedelta(day)
 
         for step in range(3, 20):
-            p = Framer(start, step, nonwork, events)
-            if p.efficiency > 0.5 and p.events_num == 2:
-                output.append(p)
+            frames = events_framer(start, step, nonwork, events)
+            all_frames.extend(frames)
 
-    return output
-
-
-l = default_test_model()
+    return all_frames
 
 
-for p in l:
-    print('{} - {:2} - {:2} - {:2} - {:4} - {}'.format(p, p.vac, p.duration, p.events_num, p.efficiency, p.view_events()))
+if __name__ == '__main__':
+    frames = default_test_model()
+
+    for frame in frames:
+        print(frame)

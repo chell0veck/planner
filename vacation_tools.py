@@ -19,10 +19,25 @@ class Event:
         self.city = city
 
     def __repr__(self):
-        return '{}'.format(self.display)
+        return '{}, {}, {}'.format(self.artist, self.date, self.city)
 
 
-def fetch_events(artists):
+class Frame:
+
+    def __init__(self, start, end, events, holidays):
+        self.start = start
+        self.end = end
+        self.events = events
+        self.holidays = holidays
+        self.num_nonwork = len(holidays)
+        self.num_events = len(events)
+        self.duration = (end - start + datetime.timedelta(1)).days
+
+    def __str__(self):
+        return '{} - {}, {:2} '.format(self.start.strftime('%a %d %b'), self.end.strftime('%a %d %b'), self.duration)
+
+
+def events_fetcher(artists):
     _api_key = open(os.path.join(Path(__file__).parents[1], 'songklick_api_key'), 'r').read()
     fetched_events = []
 
@@ -50,33 +65,28 @@ def fetch_events(artists):
     return fetched_events
 
 
-class Framer:
+def events_framer(start, step, holidays, events=None):
+    all_frames = []
+    end = start + datetime.timedelta(step - 1)
 
-    def __init__(self, start, step, holidays=None, events=None):
-        self._start = start
-        self._end = self._start + datetime.timedelta(step - 1)
-        self._events = events if events else ()
-        self.holidays = holidays if holidays else ()
-        self.duration = (self.end - self.start + datetime.timedelta(1)).days
-        self.non_work = len([d for d in self.holidays if self.start <= d <= self.end])
-        self.vac = self.duration - self.non_work
-        self.efficiency = round(self.non_work/self.duration, 2)
+    while end + datetime.timedelta(1) in holidays:
+        end += datetime.timedelta(1)
 
-    def match_events(self):
-        matches = [event for event in self._events if self.start < event.date < self.end]
-        return matches
+    while start - datetime.timedelta(1) in holidays:
+        start -= datetime.timedelta(1)
 
-    def all_events(self):
-        all_events = []
-        events_all = self.match_events()
-        art_num = len(set(event.artist for event in events_all))
-        set_all = (itertools.combinations(events_all, i) for i in range(1, art_num+1))
+    nonworking_days = set(day for day in holidays if start <= day <= end)
 
-        for events_set in set_all:
+    if events:
+        events_matches = [event for event in events if start < event.date < end]
+        artists_number = len(set(event.artist for event in events_matches))
+        events_combo = [itertools.combinations(events_matches, i) for i in range(1, artists_number+1)]
+
+        for events_set in events_combo:
             for events in events_set:
 
                 if len(events) == 1:
-                    all_events.append(events)
+                    all_frames.append(Frame(start, end, events, nonworking_days))
 
                 else:
                     all_evts = len(events)
@@ -84,35 +94,8 @@ class Framer:
                     uniq_dts = len(set(event.date for event in events))
 
                     if uniq_art == all_evts and uniq_dts == all_evts:
-                        all_events.append(events)
-        return all_events
+                        all_frames.append(Frame(start, end, events, nonworking_days))
 
-    def max_events(self):
-        return [events for events in self.all_events() if len(events) == self.events_num]
+    all_frames.append(Frame(start, end, [], nonworking_days))
 
-    def view_events(self):
-
-        pass
-
-    @property
-    def start(self):
-        start = self._start
-        while start - datetime.timedelta(1) in self.holidays:
-            start -= datetime.timedelta(1)
-        return start
-
-    @property
-    def end(self):
-        end = self._end
-        while end + datetime.timedelta(1) in self.holidays:
-            end += datetime.timedelta(1)
-        return end
-
-    @property
-    def events_num(self):
-        all_events = self.all_events()
-        events_num = max([len(events) for events in all_events]) if all_events else 0
-        return events_num
-
-    def __str__(self):
-        return '{} - {}'.format(self.start.strftime('%a %b-%d'), self.end.strftime('%a %b-%d'))
+    return all_frames
