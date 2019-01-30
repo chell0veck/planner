@@ -22,9 +22,12 @@ def default_test_model():
 
     return all_frames
 
+
 if __name__ == '__main__':
     frames = default_test_model()
-
+    track = []
     for frame in frames:
-        print(frame)
-        time.sleep(.005)
+        if (frame.start, frame.end) not in track:
+            if frame.work_days == 10 and frame.num_events == 0:
+                print(frame)
+                track.append((frame.start, frame.end))

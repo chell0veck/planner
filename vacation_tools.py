@@ -29,17 +29,18 @@ class Frame:
         self.end = end
         self.events = events
         self.holidays = holidays
-        self.num_nonwork = len(holidays)
+        self.nonwork_days = len(holidays)
         self.num_events = len(events)
         self.duration = (end - start + datetime.timedelta(1)).days
-        self.efficiency = round(self.num_nonwork/self.duration, 2)
+        self.work_days = self.duration - self.nonwork_days
+        self.efficiency = round(self.nonwork_days/self.duration, 2)
 
     def view_events(self):
         return [(event.artist, event.country) for event in self.events]
 
     def __str__(self):
-        return '{} - {}, {:2}   {:2} {}'.format(self.start.strftime('%a %d %b'), self.end.strftime('%a %d %b'),
-                                         self.duration, self.efficiency, self.view_events())
+        return '{} - {}, days:{:2}  work:{:2} efficiency:{:2}'.format(self.start.strftime('%a %d %b'), self.end.strftime('%a %d %b'),
+                                         self.duration, self.work_days, self.efficiency)
 
 
 def events_fetcher(artists):
