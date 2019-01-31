@@ -34,7 +34,10 @@ class Frame:
         self.duration = (end - start + datetime.timedelta(1)).days
         self.work_days = self.duration - self.nonwork_days
         self.efficiency = round(self.nonwork_days/self.duration, 2)
-        self.comp_eff = round((self.efficiency * 0.5 + self.num_events * 0.1), 2)
+        self.comp_eff_1 = round((self.efficiency * 0.5 + self.num_events * 0.1), 2)
+        self.unique_artists = len(set(event.artist for event in self.events))
+        self.comp_eff_2 = round((self.efficiency * 0.4 + self.num_events / self.unique_artists * 0.6), 2)\
+                            if self.events else self.comp_eff_1
 
     def view_events(self):
         return [(event.artist, event.country) for event in self.events]

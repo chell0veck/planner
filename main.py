@@ -53,25 +53,39 @@ def test_default_test_model():
                 track.append((frame.start, frame.end))
 
 
-def dump_excel():
+# def dump_excel():
 
-    slices = slice_2019_year()
+# slices = slice_2019_year()
+#
+# n = set((frame.duration, frame.nonwork_days, frame.num_events, frame.efficiency, frame.comp_eff_1, frame.comp_eff_2) for frame in slices)
+# n6 = sorted(n, key=lambda e: e[4])
+#
+# df1 = pd.DataFrame([list(nn) for nn in n6],
+#                    index=list(range(1, len(n6) + 1)),
+#                    columns=['duration', 'non_work_days', 'events', 'plain_eff', 'complex_eff_1', 'complex_eff_1'])
+#
+#
+# writer = pd.ExcelWriter('output.xlsx')
+# df1.to_excel(writer,'Sheet1')
+# writer.save()
+#
+# df1.to_excel('score_model.xlsx')
+#
+#
+#
+#
+# slices = clear_slices(slice_2019_year())
+#
+# for frame in slices:
+#     print(frame, frame.comp_eff_1, frame.comp_eff_2, frame.events)
+#
+# dump_excel()
 
-    n = set((frame.duration, frame.nonwork_days, frame.num_events, frame.efficiency, frame.comp_eff) for frame in slices)
-    n6 = sorted(n, key=lambda e: e[4])
+s = [10, 4, 2, 4]
 
-    df1 = pd.DataFrame([list(nn) for nn in n6],
-                       index=list(range(1, len(n6) + 1)),
-                       columns=['duration', 'non_work_days', 'events', 'plain_eff', 'complex_eff'])
+all, non_work, evnts, concerts = s
 
-    df1.to_excel('score_model.xlsx')
-
-
-slices = clear_slices(slice_2019_year())
-
-for frame in slices:
-    # if len(set(event.city for event in frame.events)) == 1\
-    #         and frame.num_events > 1\
-    #         and 10 < frame.duration < 20\
-    #         and frame.comp_eff == 0.45:
-    print(frame, frame.comp_eff, frame.events)
+mark1 = round(non_work/all + evnts * 0.1, 2)
+mark2 = round(non_work/all * 0.4 + evnts/concerts * 0.6, 2)
+print(mark1)
+print(mark2)
