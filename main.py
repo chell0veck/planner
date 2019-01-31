@@ -8,13 +8,16 @@ import time
 
 import pandas as pd
 
+skip = ('Japan', 'New Zealand', 'Australia', 'UK', 'US', 'Canada', 'China')
 
 artists = {'MONO': 201140, 'TOOL': 521019, 'PHIL': 495060,  'CBP': 78386}
-events = pickle.load(open('events.p', 'rb'))
+raw_events = pickle.load(open('events.p', 'rb'))
+events = [event for event in raw_events if event.country not in skip]
 
 
 def slice_2019_year():
     all_frames = []
+    track = []
 
     for day in range(365):
         start = datetime.date(2019, 1, 1) + datetime.timedelta(day)
@@ -24,6 +27,20 @@ def slice_2019_year():
             all_frames.extend(frames)
 
     return all_frames
+
+
+def clear_slices(slices):
+    output = []
+    track = []
+
+    for frame in slices:
+        key = (frame.start, frame.end)
+
+        if key not in track:
+            output.append(frame)
+            track.append(key)
+
+    return output
 
 
 def test_default_test_model():
@@ -36,30 +53,25 @@ def test_default_test_model():
                 track.append((frame.start, frame.end))
 
 
-slices = slice_2019_year()
+def dump_excel():
 
-n = set((frame.duration, frame.nonwork_days, frame.num_events, frame.efficiency, frame.comp_eff) for frame in slices)
-n6 = sorted(n, key=lambda e: e[4])
+    slices = slice_2019_year()
 
+    n = set((frame.duration, frame.nonwork_days, frame.num_events, frame.efficiency, frame.comp_eff) for frame in slices)
+    n6 = sorted(n, key=lambda e: e[4])
+
+    df1 = pd.DataFrame([list(nn) for nn in n6],
+                       index=list(range(1, len(n6) + 1)),
+                       columns=['duration', 'non_work_days', 'events', 'plain_eff', 'complex_eff'])
+
+    df1.to_excel('score_model.xlsx')
+
+
+slices = clear_slices(slice_2019_year())
 
 for frame in slices:
-    if frame.duration == 5 and frame.nonwork_days == 3 and frame.num_events == 2:
-        print(frame, frame.events)
-
-
-# x = [f[0] for f in numbers]
-# y = [f[1] for f in numbers]
-# s = [f[2] for f in numbers]
-# s_zoom = [(f[2]+1)*10 for f in numbers]
-#
-#
-# fig, ax = plt.subplots()
-# ax.scatter(x, y, s=s_zoom, c='blue')
-#
-# for i, txt in enumerate(s):
-#     ax.annotate(str(txt), (x[i], y[i]))
-#
-# plt.show()
-#
-# for number in numbers:
-#     print(number)
+    # if len(set(event.city for event in frame.events)) == 1\
+    #         and frame.num_events > 1\
+    #         and 10 < frame.duration < 20\
+    #         and frame.comp_eff == 0.45:
+    print(frame, frame.comp_eff, frame.events)
