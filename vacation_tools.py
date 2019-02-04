@@ -38,6 +38,12 @@ class Frame:
         self.unique_artists = len(set(event.artist for event in self.events))
         self.comp_eff_2 = round((self.efficiency * 0.4 + self.num_events / self.unique_artists * 0.6), 2)\
                             if self.events else self.comp_eff_1
+        self.cities = set(event.city for event in self.events)
+        self.n_cities = len(self.cities)
+        self.countries = set(event.country for event in self.events)
+        self.n_countries = len(self.countries)
+        self.artists = set(event.artist for event in self.events)
+        self.n_artists = len(self.artists)
 
     def view_events(self):
         return [(event.artist, event.country) for event in self.events]

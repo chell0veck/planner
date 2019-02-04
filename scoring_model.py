@@ -17,8 +17,8 @@ def feb_plain_model():
     plt.plot(days, hols, 'b-', label='holidays', linewidth=1)
     plt.plot(days, work, 'r-', label='working days', linewidth=1)
 
-    ax.set_yticks(list(range(0, 30, 1)))
-    ax.set_xticks(list(range(0, 30, 1)))
+    # ax.set_yticks(list(range(0, 30, 1)))
+    # ax.set_xticks(list(range(0, 30, 1)))
 
 
     ax.grid(which='major', alpha=1)

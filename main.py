@@ -1,12 +1,8 @@
 import datetime
-import matplotlib.pyplot as plt
-
 from vacation_tools import events_framer
 from data_source import nonwork
 import pickle
-import time
 
-import pandas as pd
 
 skip = ('Japan', 'New Zealand', 'Australia', 'UK', 'US', 'Canada', 'China')
 
@@ -17,30 +13,16 @@ events = [event for event in raw_events if event.country not in skip]
 
 def slice_2019_year():
     all_frames = []
-    track = []
 
     for day in range(365):
         start = datetime.date(2019, 1, 1) + datetime.timedelta(day)
 
         for step in range(3, 20):
             frames = events_framer(start, step, nonwork, events)
+
             all_frames.extend(frames)
 
     return all_frames
-
-
-def clear_slices(slices):
-    output = []
-    track = []
-
-    for frame in slices:
-        key = (frame.start, frame.end)
-
-        if key not in track:
-            output.append(frame)
-            track.append(key)
-
-    return output
 
 
 def test_default_test_model():
@@ -53,39 +35,16 @@ def test_default_test_model():
                 track.append((frame.start, frame.end))
 
 
-# def dump_excel():
+frames = slice_2019_year()
+result = []
+duplicated = []
 
-# slices = slice_2019_year()
-#
-# n = set((frame.duration, frame.nonwork_days, frame.num_events, frame.efficiency, frame.comp_eff_1, frame.comp_eff_2) for frame in slices)
-# n6 = sorted(n, key=lambda e: e[4])
-#
-# df1 = pd.DataFrame([list(nn) for nn in n6],
-#                    index=list(range(1, len(n6) + 1)),
-#                    columns=['duration', 'non_work_days', 'events', 'plain_eff', 'complex_eff_1', 'complex_eff_1'])
-#
-#
-# writer = pd.ExcelWriter('output.xlsx')
-# df1.to_excel(writer,'Sheet1')
-# writer.save()
-#
-# df1.to_excel('score_model.xlsx')
-#
-#
-#
-#
-# slices = clear_slices(slice_2019_year())
-#
-# for frame in slices:
-#     print(frame, frame.comp_eff_1, frame.comp_eff_2, frame.events)
-#
-# dump_excel()
+print('    start      end      days   work_days   eff                        events')
 
-s = [10, 4, 2, 4]
+for frame in sorted(frames, key=lambda f: f.comp_eff_2):
+    if (frame.start, frame.end, sorted(event.city for event in frame.events)) not in duplicated\
+            and frame.n_artists == 2\
+            and frame.countries == {'Italy'}:
 
-all, non_work, evnts, concerts = s
-
-mark1 = round(non_work/all + evnts * 0.1, 2)
-mark2 = round(non_work/all * 0.4 + evnts/concerts * 0.6, 2)
-print(mark1)
-print(mark2)
+        print('{}  {} {:4}     {:4}      {:4}     {}'.format(frame.start, frame.end, frame.duration, frame.work_days, frame.comp_eff_2, frame.events))
+        duplicated.append((frame.start, frame.end, sorted(event.city for event in frame.events)))
