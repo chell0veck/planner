@@ -35,9 +35,16 @@ class Frame:
         self.work_days = self.duration - self.nonwork_days
         self.efficiency = round(self.nonwork_days/self.duration, 2)
         self.comp_eff_1 = round((self.efficiency * 0.5 + self.num_events * 0.1), 2)
-        self.unique_artists = len(set(event.artist for event in self.events))
-        self.comp_eff_2 = round((self.efficiency * 0.4 + self.num_events / self.unique_artists * 0.6), 2)\
-                            if self.events else self.comp_eff_1
+        self.n_artists = len(set(event.artist for event in self.events))
+        # self.comp_eff_2 = round((self.efficiency * 0.4 + self.num_events / self.unique_artists * 0.6), 2)\
+        #                     if self.events else self.comp_eff_1
+        # self.comp_eff_2 = round((self.efficiency * 0.1 + self.num_events / self.n_artists * 0.2), 2)\
+        #                     if self.events else self.comp_eff_1
+
+        self.eff_1 = round(self.nonwork_days/self.duration, 2)
+        self.eff_2 = round((self.num_events/5),2 ) if self.events else self.eff_1
+        self.eff_3 = round(self.eff_1 + self.eff_2, 2)
+
         self.cities = set(event.city for event in self.events)
         self.n_cities = len(self.cities)
         self.countries = set(event.country for event in self.events)
@@ -76,7 +83,7 @@ def events_fetcher(artists):
                 event_city = event['venue']['metroArea']['displayName']
 
                 fetched_events.append(Event(artist, event_artists, event_display, event_date, event_type, event_uri,
-                                event_venue, event_country, event_city))
+                            event_venue, event_country, event_city))
 
     return fetched_events
 
