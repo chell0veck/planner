@@ -70,20 +70,21 @@ def events_fetcher(artists):
         res = requests.get(url).json()
 
         if res['resultsPage']['status'] == 'ok':
-            events = res['resultsPage']['results']['event']
+            if 'event' in res['resultsPage']['results']:
+                events = res['resultsPage']['results']['event']
 
-            for event in events:
-                event_artists = [e['displayName'] for e in event['performance']]
-                event_display = event['displayName']
-                event_date = datetime.datetime.strptime(event['start']['date'], '%Y-%m-%d').date()
-                event_type = event['type']
-                event_uri = event['uri']
-                event_venue = event['venue']['displayName']
-                event_country = event['venue']['metroArea']['country']['displayName']
-                event_city = event['venue']['metroArea']['displayName']
+                for event in events:
+                    event_artists = [e['displayName'] for e in event['performance']]
+                    event_display = event['displayName']
+                    event_date = datetime.datetime.strptime(event['start']['date'], '%Y-%m-%d').date()
+                    event_type = event['type']
+                    event_uri = event['uri']
+                    event_venue = event['venue']['displayName']
+                    event_country = event['venue']['metroArea']['country']['displayName']
+                    event_city = event['venue']['metroArea']['displayName']
 
-                fetched_events.append(Event(artist, event_artists, event_display, event_date, event_type, event_uri,
-                            event_venue, event_country, event_city))
+                    fetched_events.append(Event(artist, event_artists, event_display, event_date, event_type, event_uri,
+                                event_venue, event_country, event_city))
 
     return fetched_events
 

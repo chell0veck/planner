@@ -7,11 +7,15 @@ import pickle
 skip = ('Japan', 'New Zealand', 'Australia', 'UK', 'US', 'Canada', 'China')
 
 artists = {'MONO': 201140, 'TOOL': 521019, 'PHIL': 495060,  'CBP': 78386, 'APC':549892, 'Puscifer':594931,
-           'Damien Rice':391954, 'Caspian':508722, 'Bell X1': 78581, 'Interpol': 138058}
-raw_events = pickle.load(open('events.p', 'rb'))
-# raw_events = events_fetcher(artists)
-events = [event for event in raw_events if event.country not in skip]
+           'Damien Rice':391954, 'Caspian':508722, 'Bell X1': 78581}
 
+raw_events = events_fetcher(artists)
+# print(events)
+
+# raw_events = pickle.load(open('events.p', 'rb'))
+# # raw_events = events_fetcher(artists)
+events = [event for event in raw_events if event.country not in skip]
+#
 def slice_2019_year():
     all_frames = []
 
@@ -24,8 +28,8 @@ def slice_2019_year():
             all_frames.extend(frames)
 
     return all_frames
-
-
+#
+#
 def test_default_test_model():
     frames = slice_2019_year()
     track = []
@@ -43,8 +47,8 @@ duplicated = []
 print('    start      end      days   work_days   eff                        events')
 
 for frame in sorted(frames, key=lambda f: f.eff_3):
-    if (frame.start, frame.end, sorted(event.city for event in frame.events)) not in duplicated\
-            and frame.countries == {'Italy'}:
+    if (frame.start, frame.end, sorted(event.city for event in frame.events)) not in duplicated \
+            and 'Bell X1' in frame.artists:
 
         print('{}  {} {:4}     {:4}      {:4}  {:4}   {:4}   {}'.format(frame.start, frame.end, frame.duration, frame.work_days,
                                                              frame.eff_1, frame.eff_2, frame.eff_3, frame.events))
