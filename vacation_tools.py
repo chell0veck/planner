@@ -27,37 +27,37 @@ class Frame:
     def __init__(self, start, end, events, holidays):
         self.start = start
         self.end = end
-        self.events = events
-        self.holidays = holidays
+
         self.nonwork_days = len(holidays)
-        self.num_events = len(events)
         self.duration = (end - start + datetime.timedelta(1)).days
         self.work_days = self.duration - self.nonwork_days
-        self.efficiency = round(self.nonwork_days/self.duration, 2)
-        self.comp_eff_1 = round((self.efficiency * 0.5 + self.num_events * 0.1), 2)
-        self.n_artists = len(set(event.artist for event in self.events))
-        # self.comp_eff_2 = round((self.efficiency * 0.4 + self.num_events / self.unique_artists * 0.6), 2)\
-        #                     if self.events else self.comp_eff_1
-        # self.comp_eff_2 = round((self.efficiency * 0.1 + self.num_events / self.n_artists * 0.2), 2)\
-        #                     if self.events else self.comp_eff_1
 
-        self.eff_1 = round(self.nonwork_days/self.duration, 2)
-        self.eff_2 = round((self.num_events/5),2 ) if self.events else self.eff_1
-        self.eff_3 = round(self.eff_1 + self.eff_2, 2)
-
+        self.holidays = holidays
+        self.events = events
         self.cities = set(event.city for event in self.events)
-        self.n_cities = len(self.cities)
-        self.countries = set(event.country for event in self.events)
-        self.n_countries = len(self.countries)
         self.artists = set(event.artist for event in self.events)
+        self.countries = set(event.country for event in self.events)
+
+        self.n_holidays = len(self.holidays)
+        self.n_events = len(self.events)
+        self.n_cities = len(self.cities)
         self.n_artists = len(self.artists)
+        self.n_countries = len(self.countries)
+
+        self.efficiency = round(self.nonwork_days / self.duration, 2)
+        self.comp_eff_1 = round((self.efficiency * 0.5 + self.n_events * 0.1), 2)
+        self.eff_1 = round(self.nonwork_days/self.duration, 2)
+        self.eff_2 = round((self.n_events/5),2 ) if self.events else self.eff_1
+        self.eff_3 = round(self.eff_1 + self.eff_2, 2)
 
     def view_events(self):
         return [(event.artist, event.country) for event in self.events]
 
     def __str__(self):
-        return '{} - {}, days:{:2}  work:{:2} efficiency:{:2}'.format(self.start.strftime('%a %d %b'), self.end.strftime('%a %d %b'),
-                                         self.duration, self.work_days, self.efficiency)
+        return '{} - {}, days:{:2}  work:{:2} efficiency:{:2}'.format(self.start.strftime('%a %d %b'),
+                                                                      self.end.strftime('%a %d %b'),
+                                                                      self.duration, self.work_days,
+                                                                      self.efficiency)
 
 
 def events_fetcher(artists):

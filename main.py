@@ -1,5 +1,6 @@
 from vacation_tools import events_framer, events_fetcher, slice_this_year, this_year_artists
 from data_source import nonwork, skip, artists
+import datetime
 
 
 def test_model():
@@ -10,8 +11,9 @@ def test_model():
     print('    start      end      days   work_days   eff                        events')
 
     for frame in sorted(frames, key=lambda f: f.eff_3):
-        if (frame.start, frame.end, sorted(event.city for event in frame.events)) not in duplicated \
-                and frame.n_artists == 0:
+        if (frame.start, frame.end, sorted(event.city for event in frame.events)) not in duplicated\
+                and frame.start > datetime.date(2019, 6, 1) and frame.end < datetime.date(2019, 9, 1)\
+                and frame.eff_1 > 0.6:
 
             print('{}  {} {:4}     {:4}      {:4}  {:4}   {:4}   {}'.format(frame.start, frame.end, frame.duration,
                                                                             frame.work_days,frame.eff_1, frame.eff_2,
