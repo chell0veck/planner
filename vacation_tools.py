@@ -123,3 +123,22 @@ def events_framer(start, step, holidays, events=None):
     all_frames.append(Frame(start, end, [], nonworking_days))
 
     return all_frames
+
+
+def this_year_artists(artists):
+    events = events_fetcher(artists)
+    print(set([event.artist for event in events]))
+
+
+def slice_this_year(nonwork, events):
+    all_frames = []
+
+    for day in range(365):
+        start = datetime.date(2019, 1, 1) + datetime.timedelta(day)
+
+        for step in range(3, 20):
+            frames = events_framer(start, step, nonwork, events)
+
+            all_frames.extend(frames)
+
+    return all_frames
