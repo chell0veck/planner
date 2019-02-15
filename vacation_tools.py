@@ -50,7 +50,7 @@ class Frame:
         self.eff_2 = round((self.n_events/5),2 ) if self.events else self.eff_1
         self.eff_3 = round(self.eff_1 + self.eff_2, 2)
 
-    def view_events(self):
+    def view_frame(self):
         return [(event.artist, event.country) for event in self.events]
 
     def __str__(self):

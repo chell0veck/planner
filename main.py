@@ -12,8 +12,7 @@ def test_model():
 
     for frame in sorted(frames, key=lambda f: f.eff_3):
         if (frame.start, frame.end, sorted(event.city for event in frame.events)) not in duplicated\
-                and frame.start > datetime.date(2019, 6, 1) and frame.end < datetime.date(2019, 9, 1)\
-                and frame.eff_1 > 0.6:
+                and frame.start == datetime.date(2019, 6, 8) and 'Florence' in frame.cities:
 
             print('{}  {} {:4}     {:4}      {:4}  {:4}   {:4}   {}'.format(frame.start, frame.end, frame.duration,
                                                                             frame.work_days,frame.eff_1, frame.eff_2,
