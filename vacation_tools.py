@@ -44,11 +44,7 @@ class Frame:
         self.n_artists = len(self.artists)
         self.n_countries = len(self.countries)
 
-        self.efficiency = round(self.nonwork_days / self.duration, 2)
-        self.comp_eff_1 = round((self.efficiency * 0.5 + self.n_events * 0.1), 2)
-        self.eff_1 = round(self.nonwork_days/self.duration, 2)
-        self.eff_2 = round((self.n_events/5),2 ) if self.events else self.eff_1
-        self.eff_3 = round(self.eff_1 + self.eff_2, 2)
+        self.eff = round(self.nonwork_days / self.duration, 2)
 
     def view_frame(self):
         return [(event.artist, event.country) for event in self.events]
@@ -57,7 +53,7 @@ class Frame:
         return '{} - {}, days:{:2}  work:{:2} efficiency:{:2}'.format(self.start.strftime('%a %d %b'),
                                                                       self.end.strftime('%a %d %b'),
                                                                       self.duration, self.work_days,
-                                                                      self.efficiency)
+                                                                      self.eff)
 
 
 def events_fetcher(artists):

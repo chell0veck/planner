@@ -12,6 +12,9 @@ nonwork = holidays + weekends
 
 skip = ('Japan', 'New Zealand', 'Australia', 'UK', 'US', 'Canada', 'China')
 
-artists = {'MONO': 201140, 'TOOL': 521019, 'PHIL': 495060,  'CBP': 78386, 'APC': 549892, 'Puscifer': 594931,
-           'Damien Rice': 391954, 'Caspian': 508722, 'Bell X1': 78581, 'EXP': 561284, 'Mogwai': 70202,
-           'Sigur Rós': 496602}
+# artists = {'MONO': 201140, 'TOOL': 521019, 'CBP': 78386, 'APC': 549892, 'Puscifer': 594931,
+#            'Damien Rice': 391954, 'Caspian': 508722, 'Bell X1': 78581, 'EXP': 561284, 'Mogwai': 70202,
+#            'Sigur Rós': 496602, 'The National': 405285, 'Chevelle': 480448, 'Editors': 306990}
+
+
+artists = {'TOOL': 521019}
