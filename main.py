@@ -12,12 +12,14 @@ def test_model():
 
     for frame in sorted(frames, key=lambda f: f.eff):
         if (frame.start, frame.end, sorted(event.city for event in frame.events)) not in duplicated\
-                and 'Florence' in frame.cities and frame.n_artists == 1 and frame.duration > 9:
+                and 'TOOL' in frame.artists and 'Florence' in frame.cities:
+                # and 'Florence' in frame.cities and frame.n_artists == 1:
 
-            print('{}  {} {:4}     {:4}      {}'.format(frame.start, frame.end, frame.duration,
+            print('{}  {} {:4}   {:4}        {:4}   {}'.format(frame.start, frame.end, frame.duration,
                                                                             frame.work_days, frame.eff, frame.events))
 
             duplicated.append((frame.start, frame.end, sorted(event.city for event in frame.events)))
 
 
-test_model()
+# test_model()
+
