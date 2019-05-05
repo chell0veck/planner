@@ -1,10 +1,9 @@
-from vacation_tools import events_framer, events_fetcher, slice_this_year, this_year_artists
-from data_source import nonwork, skip, artists
-import datetime
+from planner.vacation_tools import events_fetcher, slice_this_year
+from planner.data_source import nonwork, skip_countries, artists
 
 
 def test_model():
-    events = [event for event in events_fetcher(artists) if event.country not in skip]
+    events = [event for event in events_fetcher(artists) if event.country not in skip_countries]
     frames = slice_this_year(nonwork, events)
     duplicated = []
 

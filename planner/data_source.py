@@ -10,11 +10,10 @@ weekends = [(datetime.date(2019, 1, 1) + datetime.timedelta(i)) for i in range(3
 
 nonwork = holidays + weekends
 
-skip = ('Japan', 'New Zealand', 'Australia', 'UK', 'US', 'Canada', 'China')
+skip_countries = ('Japan', 'New Zealand', 'Australia', 'UK', 'US', 'Canada', 'China')
 
 artists = {'MONO': 201140, 'TOOL': 521019, 'CBP': 78386, 'APC': 549892, 'Puscifer': 594931,
            'Damien Rice': 391954, 'Caspian': 508722, 'Bell X1': 78581, 'EXP': 561284, 'Mogwai': 70202,
-           'Sigur Rós': 496602, 'The National': 405285, 'Chevelle': 480448, 'Editors': 306990}
+           'Sigur Rós': 496602, 'The National': 405285, 'Chevelle': 480448, 'Editors': 306990,
+           'Yndi Halda': 4768, 'The Seven Mile Journey': 368079}
 
-
-# artists = {'TOOL': 521019}
