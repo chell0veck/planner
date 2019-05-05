@@ -19,7 +19,7 @@ class Event:
         self.city = city
 
     def __repr__(self):
-        return '{}, {}, {}'.format(self.artist, self.date, self.city)
+        return '{}, {}, {}'.format(self.artist, self.date, self.city, self.country)
 
 
 class Frame:
@@ -57,7 +57,7 @@ class Frame:
 
 
 def events_fetcher(artists):
-    _api_key = open(os.path.join(Path(__file__).parents[1], 'songklick_api_key'), 'r').read()
+    _api_key = open(os.path.join(Path(__file__).parents[0], '.SNK_API_KEY.txt'), 'r').read()
     fetched_events = []
 
     for artist, artist_id in artists.items():
@@ -81,7 +81,6 @@ def events_fetcher(artists):
 
                     fetched_events.append(Event(artist, event_artists, event_display, event_date, event_type, event_uri,
                                 event_venue, event_country, event_city))
-
     return fetched_events
 
 
