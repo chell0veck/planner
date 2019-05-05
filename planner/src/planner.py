@@ -1,5 +1,3 @@
-from data_src import ARTISTS
-from tools import events_fetcher
 import pickle
 
 events = pickle.load(open('events.pickle','rb'))
