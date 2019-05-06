@@ -170,14 +170,17 @@ def songkick_get_events(artist):
 def songkick_dump_events(artists, file=os.path.join(Path(__file__).parents[1], 'resources','events.pickle')):
     results = []
 
-    for artist in artists:
-        events = songkick_get_events(artist)
-        results.extend(events)
-
-    print(results)
-
-    with open(file) as f:
-        pickle.dump(results,f)
+    for artist in artists.items():
+        print(artist)
+        # events = songkick_get_events(artist)
+        # print(events)
+        # results.extend(events)
+    #
+    # print(results)
+    #
+    # with open(file) as f:
+    #     pickle.dump(results,f)
 
 
 print(songkick_get_events({'Mono': 201140}))
+songkick_dump_events({'Mono': 201140, 'Tool': 521019})
