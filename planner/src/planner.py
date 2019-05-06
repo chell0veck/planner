@@ -1,6 +1,11 @@
+import os
+from pathlib import Path
 import pickle
 
-events = pickle.load(open('events.pickle','rb'))
+
+FILE = os.path.join(Path(__file__).parents[1], 'resources','events.pickle')
+
+events = pickle.load(open(FILE, 'rb'))
 
 results = [[event.artist, event.date, event.city] for event in events]
 results.sort(key=lambda e: e[1])

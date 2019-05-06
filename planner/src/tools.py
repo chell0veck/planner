@@ -57,7 +57,7 @@ class Frame:
 
 
 def events_fetcher(artists):
-    _api_key = open(os.path.join(Path(__file__).parents[0], '.SNK_API_KEY.txt'), 'r').read()
+    _api_key = open(os.path.join(Path(__file__).parents[1], 'resources','.SNK_API_KEY.txt'), 'r').read()
     fetched_events = []
 
     for artist, artist_id in artists.items():
