@@ -137,3 +137,33 @@ def slice_this_year(nonwork, events):
             all_frames.extend(frames)
 
     return all_frames
+
+
+def songkick_get_events(artist):
+    events = []
+    _api_key = open(os.path.join(Path(__file__).parents[1], 'resources', '.SNK_API_KEY.txt'), 'r').read()
+
+    for artist_name, artist_id in artist.items():
+        url = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'.format(artist_id, _api_key)
+        res = requests.get(url).json()
+
+        if res['resultsPage']['status'] == 'ok' and 'event' in res['resultsPage']['results']:
+            _events = res['resultsPage']['results']['event']
+
+            for _event in _events:
+                _event_artists = [e['displayName'] for e in _event['performance']]
+                _event_display = _event['displayName']
+                _event_date = datetime.datetime.strptime(_event['start']['date'], '%Y-%m-%d').date()
+                _event_type = _event['type']
+                _event_uri = _event['uri']
+                _event_venue = _event['venue']['displayName']
+                _event_country = _event['venue']['metroArea']['country']['displayName']
+                _event_city = _event['venue']['metroArea']['displayName']
+
+                events.append(Event(artist_name, _event_artists, _event_display, _event_date, _event_type, _event_uri,
+                                    _event_venue, _event_country, _event_city))
+
+    return events
+
+
+print(songkick_get_events({'Mono': 201140}))
