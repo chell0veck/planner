@@ -141,46 +141,46 @@ def slice_this_year(nonwork, events):
 
 
 def songkick_get_events(artist):
-    events = []
-    _api_key = open(os.path.join(Path(__file__).parents[1], 'resources', '.SNK_API_KEY.txt'), 'r').read()
+    artist_name, artist_id = artist[0], artist[1]
+    api_key = open(os.path.join(Path(__file__).parents[1], 'resources', '.SNK_API_KEY.txt'), 'r').read()
+    url = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'.format(artist_id, api_key)
+    res = requests.get(url).json()
+    results = []
 
-    for artist_name, artist_id in artist.items():
-        url = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'.format(artist_id, _api_key)
-        res = requests.get(url).json()
+    if res['resultsPage']['status'] == 'ok' and 'event' in res['resultsPage']['results']:
+        events = res['resultsPage']['results']['event']
+        print(events)
 
-        if res['resultsPage']['status'] == 'ok' and 'event' in res['resultsPage']['results']:
-            _events = res['resultsPage']['results']['event']
-
-            for _event in _events:
-                _event_artists = [e['displayName'] for e in _event['performance']]
-                _event_display = _event['displayName']
-                _event_date = datetime.datetime.strptime(_event['start']['date'], '%Y-%m-%d').date()
-                _event_type = _event['type']
-                _event_uri = _event['uri']
-                _event_venue = _event['venue']['displayName']
-                _event_country = _event['venue']['metroArea']['country']['displayName']
-                _event_city = _event['venue']['metroArea']['displayName']
-
-                events.append(Event(artist_name, _event_artists, _event_display, _event_date, _event_type, _event_uri,
-                                    _event_venue, _event_country, _event_city))
-
-    return events
+        # for event in events:
+        #     event_artists = [e['displayName'] for e in event['performance']]
+        #     print(event_artists)
+            # event_display = event['displayName']
+            # event_date = datetime.datetime.strptime(event['start']['date'], '%Y-%m-%d').date()
+            # event_type = event['type']
+            # event_uri = event['uri']
+            # event_venue = event['venue']['displayName']
+            # event_country = event['venue']['metroArea']['country']['displayName']
+            # event_city = event['venue']['metroArea']['displayName']
+            #
+            # events.append(Event(artist_name, None, event_display, event_date, event_type, event_uri,
+            #                     event_venue, event_country, event_city))
+    #
+    # return results
 
 
 def songkick_dump_events(artists, file=os.path.join(Path(__file__).parents[1], 'resources','events.pickle')):
     results = []
 
     for artist in artists.items():
-        print(artist)
-        # events = songkick_get_events(artist)
-        # print(events)
-        # results.extend(events)
-    #
-    # print(results)
+        events = songkick_get_events(artist)
+        results.append(events)
+
+    print(results)
+
     #
     # with open(file) as f:
     #     pickle.dump(results,f)
 
 
-print(songkick_get_events({'Mono': 201140}))
-songkick_dump_events({'Mono': 201140, 'Tool': 521019})
+print(songkick_get_events(('Mono', 201140)))
+# songkick_dump_events({'Mono': 201140, 'Tool': 521019})
