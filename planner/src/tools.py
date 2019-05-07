@@ -1,26 +1,21 @@
 import datetime
-import itertools
-import requests
-import os
-from pathlib import Path
-import pickle
 
 
 class Event:
 
-    def __init__(self, artist, artists, display, date, _type, uri, venue, country, city):
+    def __init__(self, artist, artists, display, date, event_type, uri, venue, country, city):
         self.artist = artist
         self.artists = artists
         self.display = display
         self.date = date
-        self.type = _type
+        self.type = event_type
         self.uri = uri
         self.venue = venue
         self.country = country
         self.city = city
 
     def __repr__(self):
-        return '{}, {}, {}'.format(self.artist, self.date, self.city, self.country)
+        return '{:15} {} {:20} {}'.format(self.artist, self.date, self.city, self.country)
 
 
 class Frame:
@@ -55,132 +50,3 @@ class Frame:
                                                                       self.end.strftime('%a %d %b'),
                                                                       self.duration, self.work_days,
                                                                       self.eff)
-
-
-def events_fetcher(artists):
-    _api_key = open(os.path.join(Path(__file__).parents[1], 'resources','.SNK_API_KEY.txt'), 'r').read()
-    fetched_events = []
-
-    for artist, artist_id in artists.items():
-
-        url = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'.format(artist_id, _api_key)
-        res = requests.get(url).json()
-
-        if res['resultsPage']['status'] == 'ok':
-            if 'event' in res['resultsPage']['results']:
-                events = res['resultsPage']['results']['event']
-
-                for event in events:
-                    event_artists = [e['displayName'] for e in event['performance']]
-                    event_display = event['displayName']
-                    event_date = datetime.datetime.strptime(event['start']['date'], '%Y-%m-%d').date()
-                    event_type = event['type']
-                    event_uri = event['uri']
-                    event_venue = event['venue']['displayName']
-                    event_country = event['venue']['metroArea']['country']['displayName']
-                    event_city = event['venue']['metroArea']['displayName']
-
-                    fetched_events.append(Event(artist, event_artists, event_display, event_date, event_type, event_uri,
-                                event_venue, event_country, event_city))
-    return fetched_events
-
-
-def events_framer(start, step, holidays, events=None):
-    all_frames = []
-    end = start + datetime.timedelta(step - 1)
-
-    while end + datetime.timedelta(1) in holidays:
-        end += datetime.timedelta(1)
-
-    while start - datetime.timedelta(1) in holidays:
-        start -= datetime.timedelta(1)
-
-    nonworking_days = set(day for day in holidays if start <= day <= end)
-
-    if events:
-        events_matches = [event for event in events if start < event.date < end]
-        artists_number = len(set(event.artist for event in events_matches))
-        events_combo = [itertools.combinations(events_matches, i) for i in range(1, artists_number+1)]
-
-        for events_set in events_combo:
-            for events in events_set:
-
-                if len(events) == 1:
-                    all_frames.append(Frame(start, end, events, nonworking_days))
-
-                else:
-                    all_evts = len(events)
-                    uniq_art = len(set(event.artist for event in events))
-                    uniq_dts = len(set(event.date for event in events))
-
-                    if uniq_art == all_evts and uniq_dts == all_evts:
-                        all_frames.append(Frame(start, end, events, nonworking_days))
-
-    all_frames.append(Frame(start, end, [], nonworking_days))
-
-    return all_frames
-
-
-def this_year_artists(artists):
-    events = events_fetcher(artists)
-    print(set([event.artist for event in events]))
-
-
-def slice_this_year(nonwork, events):
-    all_frames = []
-
-    for day in range(365):
-        start = datetime.date(2019, 1, 1) + datetime.timedelta(day)
-
-        for step in range(3, 20):
-            frames = events_framer(start, step, nonwork, events)
-
-            all_frames.extend(frames)
-
-    return all_frames
-
-
-def songkick_get_events(artist):
-    artist_name, artist_id = artist[0], artist[1]
-    api_key = open(os.path.join(Path(__file__).parents[1], 'resources', '.SNK_API_KEY.txt'), 'r').read()
-    url = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'.format(artist_id, api_key)
-    res = requests.get(url).json()
-    results = []
-
-    if res['resultsPage']['status'] == 'ok' and 'event' in res['resultsPage']['results']:
-        events = res['resultsPage']['results']['event']
-        print(events)
-
-        # for event in events:
-        #     event_artists = [e['displayName'] for e in event['performance']]
-        #     print(event_artists)
-            # event_display = event['displayName']
-            # event_date = datetime.datetime.strptime(event['start']['date'], '%Y-%m-%d').date()
-            # event_type = event['type']
-            # event_uri = event['uri']
-            # event_venue = event['venue']['displayName']
-            # event_country = event['venue']['metroArea']['country']['displayName']
-            # event_city = event['venue']['metroArea']['displayName']
-            #
-            # events.append(Event(artist_name, None, event_display, event_date, event_type, event_uri,
-            #                     event_venue, event_country, event_city))
-    #
-    # return results
-
-
-def songkick_dump_events(artists, file=os.path.join(Path(__file__).parents[1], 'resources','events.pickle')):
-    results = []
-
-    for artist in artists.items():
-        events = songkick_get_events(artist)
-        results.append(events)
-
-    print(results)
-
-    #
-    # with open(file) as f:
-    #     pickle.dump(results,f)
-
-
-print(songkick_get_events(('Mono', 201140)))
-# songkick_dump_events({'Mono': 201140, 'Tool': 521019})

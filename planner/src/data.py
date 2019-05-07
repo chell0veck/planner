@@ -12,7 +12,7 @@ WEEKENDS = [(datetime.date(2019, 1, 1) + datetime.timedelta(i)) for i in range(3
 
 NON_WORK = FMT_HOLS + WEEKENDS
 
-SKIP_CTRY = ('Japan', 'New Zealand', 'Australia', 'UK', 'US', 'Canada', 'China')
+SKIP_CTRY = ('Japan', 'New Zealand', 'Australia', 'US', 'Canada', 'China')
 
 ARTISTS = {'Mono': 201140, 'Tool': 521019, 'CBP': 78386, 'APC': 549892, 'Puscifer': 594931,
            'Damien Rice': 391954, 'Caspian': 508722, 'Bell X1': 78581, 'EXP': 561284, 'Mogwai': 70202,
