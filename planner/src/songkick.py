@@ -6,6 +6,7 @@ import pickle
 from pathlib import Path
 
 from tools import Event
+from data import ARTISTS
 
 
 FILE = os.path.join(Path(__file__).parents[1], 'resources', 'songkick_events.pickle')
@@ -40,7 +41,7 @@ def get_events(artist):
     return results
 
 
-def dump_events(artists):
+def dump_events(artists=ARTISTS):
 
     results = []
 
