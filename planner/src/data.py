@@ -1,3 +1,6 @@
+""" """
+
+
 import datetime
 
 
@@ -18,3 +21,5 @@ ARTISTS = {'Mono': 201140, 'Tool': 521019, 'CBP': 78386, 'APC': 549892, 'Puscife
            'Damien Rice': 391954, 'Caspian': 508722, 'Bell X1': 78581, 'EXP': 561284, 'Mogwai': 70202,
            'Sigur Rós': 496602, 'The National': 405285, 'Chevelle': 480448, 'Editors': 306990,
            'Yndi Halda': 4768, 'The Seven Mile Journey': 368079}
+
+# todo: it should be stored somehow better

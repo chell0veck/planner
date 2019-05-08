@@ -1,3 +1,12 @@
+""" Additional datatypes.
+
+    Classes:
+
+    Event
+    Frame
+
+ """
+
 import datetime
 
 
