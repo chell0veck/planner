@@ -22,4 +22,5 @@ ARTISTS = {'Mono': 201140, 'Tool': 521019, 'CBP': 78386, 'APC': 549892, 'Puscife
            'Sigur Rós': 496602, 'The National': 405285, 'Chevelle': 480448, 'Editors': 306990,
            'Yndi Halda': 4768, 'The Seven Mile Journey': 368079}
 
+
 # todo: it should be stored somehow better
