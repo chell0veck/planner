@@ -1,4 +1,6 @@
-""" """
+""" Hold static data,
+    artists, nonworking days, countries to skip
+"""
 
 
 import datetime

@@ -17,7 +17,7 @@ import pickle
 from pathlib import Path
 
 from tools import Event
-from data import ARTISTS
+from static import ARTISTS
 
 
 FILE = os.path.join(Path(__file__).parents[1], 'resources', 'songkick_events.pickle')
