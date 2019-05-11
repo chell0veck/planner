@@ -25,8 +25,9 @@ FILE = os.path.join(Path(__file__).parents[1], 'resources', 'songkick_events.pic
 
 def get_events(artist):
     """ Returns events from songkick for required artist"""
+
     artist_name, artist_id = artist
-    api_key = open(os.path.join(Path(__file__).parents[1], 'resources', '.SNK_API_KEY.txt'), 'r').read()
+    api_key = open(os.path.join(Path(__file__).parents[1], 'resources', '.songkick_api_key.txt'), 'r').read()
     url = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'.format(artist_id, api_key)
     response = requests.get(url).json()
     results = []
@@ -54,7 +55,7 @@ def get_events(artist):
 
 
 def dump_events(artists=ARTISTS):
-    """Serialize events for artists"""
+    """Cache events"""
 
     results = []
 
@@ -67,7 +68,7 @@ def dump_events(artists=ARTISTS):
 
 
 def load_events(data=ARTISTS):
-    """Loal serialized events for artists"""
+    """Load events from cache"""
 
     with open(FILE, 'rb') as f:
         return pickle.load(f)
