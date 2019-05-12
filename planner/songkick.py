@@ -18,7 +18,10 @@ import json
 from pathlib import Path
 
 from tools import Event
+import calendarific
 
+
+holidays = calendarific.load_holidays()
 cache = os.path.join(Path(__file__).parents[0], 'static', 'events.pickle')
 api_key = open(os.path.join(Path(__file__).parents[0], 'config', '.songkick_api_key'), 'r').read()
 artists = json.load(open(os.path.join(Path(__file__).parents[0], 'static', 'artists.json')))
@@ -61,6 +64,12 @@ def dump_events(artists=artists):
     for artist in artists.items():
         events = get_events(artist)
         results.extend(events)
+
+    for holiday in holidays:
+        if holiday > datetime.date.today():
+            event = Event('Holiday', 'Holiday', 'Holiday', holiday, 'Holiday',
+                          'Holiday', 'Holiday', 'Holiday', 'Ukraine')
+            results.append(event)
 
     with open(cache, 'wb') as f:
         pickle.dump(results, f)

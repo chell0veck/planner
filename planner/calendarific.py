@@ -21,7 +21,7 @@ def get_holidays():
 
         for holiday in holidays:
             if 'National holiday' in holiday['type']:
-                _date = datetime.datetime.strptime(holiday['date']['iso'], '%Y-%m-%d')
+                _date = datetime.datetime.strptime(holiday['date']['iso'], '%Y-%m-%d').date()
 
                 if _date.weekday() not in (5, 6):
                     out.append(_date)

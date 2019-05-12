@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 import songkick
+import calendarific
 from static import events, skip_ctry
 
 
@@ -10,8 +11,10 @@ def default_model():
 
     for event in sorted(events, key=lambda e: e.date):
         if event.country not in skip_ctry\
-                and event.type == 'Concert':
-            print(event, event.date.strftime("%A"), event.country)
+                and event.type in ('Concert', 'Holiday'):
+            print(event)
 
 
+# calendarific.dump_holidays()
+# songkick.dump_events()
 default_model()

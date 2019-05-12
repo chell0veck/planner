@@ -24,7 +24,8 @@ class Event:
         self.city = city
 
     def __repr__(self):
-        return '{:15} {} {:20} {}'.format(self.artist, self.date, self.city, self.country)
+        return '{:15} {} {:10} {:20} {}'\
+            .format(self.artist, self.date, self.date.strftime("%A"), self.city, self.country)
 
 
 class Frame:
