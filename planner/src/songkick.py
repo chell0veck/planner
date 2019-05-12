@@ -27,7 +27,7 @@ def get_events(artist):
     """ Returns events from songkick for required artist"""
 
     artist_name, artist_id = artist
-    api_key = open(os.path.join(Path(__file__).parents[1], 'resources', '.songkick_api_key.txt'), 'r').read()
+    api_key = open(os.path.join(Path(__file__).parents[1], 'resources', '.songkick_api_key'), 'r').read()
     url = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'.format(artist_id, api_key)
     response = requests.get(url).json()
     results = []
