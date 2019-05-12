@@ -13,15 +13,15 @@ import os
 import datetime
 import requests
 import pickle
+import json
 
 from pathlib import Path
 
 from tools import Event
-from static import ARTISTS
 
-
-cache = os.path.join(Path(__file__).parents[1], 'resources', 'events.pickle')
-api_key = open(os.path.join(Path(__file__).parents[1], 'resources', '.songkick_api_key'), 'r').read()
+cache = os.path.join(Path(__file__).parents[0], 'static', 'events.pickle')
+api_key = open(os.path.join(Path(__file__).parents[0], 'config', '.songkick_api_key'), 'r').read()
+artists = json.load(open(os.path.join(Path(__file__).parents[0], 'static', 'artists.json')))
 
 
 def get_events(artist):
@@ -54,7 +54,7 @@ def get_events(artist):
     return results
 
 
-def dump_events(artists=ARTISTS):
+def dump_events(artists=artists):
     """ Dump events on dist"""
     results = []
 

@@ -6,9 +6,9 @@ import os
 from pathlib import Path
 
 
-api_key = open(os.path.join(Path(__file__).parents[1], 'resources', '.calendarific_api_key'), 'r').read()
+api_key = open(os.path.join(Path(__file__).parents[0], 'config', '.calendarific_api_key'), 'r').read()
 params = {'api_key': api_key, 'country': 'ua', 'year': datetime.datetime.today().year}
-cache = os.path.join(Path(__file__).parents[1], 'resources', 'holidays.pickle')
+cache = os.path.join(Path(__file__).parents[0], 'static', 'holidays.pickle')
 url = 'https://calendarific.com/api/v2/holidays'
 
 
