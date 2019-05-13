@@ -8,6 +8,8 @@
  """
 
 import datetime
+import time
+
 
 
 class Event:
@@ -60,3 +62,17 @@ class Frame:
                                                                       self.end.strftime('%a %d %b'),
                                                                       self.duration, self.work_days,
                                                                       self.eff)
+
+
+def timeit(method):
+
+    def timed(*args):
+        ts = time.time()
+        result = method(*args)
+        te = time.time()
+        ws = (te-ts) % 60
+        print('{}({}) took {:.2} seconds'.format(method.__name__, *args, ws))
+        return result
+
+    return timed
+

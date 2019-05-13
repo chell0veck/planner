@@ -4,7 +4,7 @@ from pathlib import Path
 
 import songkick
 import calendarific
-from static import events, skip_ctry
+from static import events, skip_ctry, artists
 
 
 def default_model():
@@ -17,4 +17,8 @@ def default_model():
 
 # calendarific.dump_holidays()
 # songkick.dump_events()
-default_model()
+# default_model()
+
+songkick.dump_events(artists)
+
+

@@ -17,7 +17,7 @@ import json
 
 from pathlib import Path
 
-from tools import Event
+from tools import Event, timeit
 import calendarific
 
 
@@ -25,7 +25,6 @@ holidays = calendarific.load_holidays()
 cache = os.path.join(Path(__file__).parents[0], 'static', 'events.pickle')
 api_key = open(os.path.join(Path(__file__).parents[0], 'config', '.songkick_api_key'), 'r').read()
 artists = json.load(open(os.path.join(Path(__file__).parents[0], 'static', 'artists.json')))
-
 
 def get_events(artist):
     """ Returns events from songkick for required artist"""
@@ -55,7 +54,6 @@ def get_events(artist):
                                  event_uri, event_venue, event_country, event_city))
 
     return results
-
 
 def dump_events(artists=artists):
     """ Dump events on dist"""
