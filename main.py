@@ -17,8 +17,8 @@ def default_model():
 
 # calendarific.dump_holidays()
 # songkick.dump_events()
-# default_model()
-
-songkick.dump_events(artists)
+default_model()
+#
+# songkick.dump_events(artists)
 
 
