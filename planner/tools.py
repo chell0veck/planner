@@ -76,3 +76,28 @@ def timeit(method):
 
     return timed
 
+
+def wrap_events(artist_name, events):
+    results = []
+
+    for event in events:
+        event_artists = [e['displayName'] for e in event['performance']]
+        event_display = event['displayName']
+        event_date = datetime.datetime.strptime(event['start']['date'], '%Y-%m-%d').date()
+        event_type = event['type']
+        event_uri = event['uri']
+        event_venue = event['venue']['displayName']
+        event_country = event['venue']['metroArea']['country']['displayName']
+        event_city = event['venue']['metroArea']['displayName']
+
+        results.append(Event(artist_name, event_artists, event_display, event_date, event_type,
+                             event_uri, event_venue, event_country, event_city))
+
+    return results
+
+
+def fetch_artists_id(artists):
+    return artists.keys()
+
+from static import artists
+print(artists)

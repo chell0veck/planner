@@ -26,6 +26,7 @@ cache = os.path.join(Path(__file__).parents[0], 'static', 'events.pickle')
 api_key = open(os.path.join(Path(__file__).parents[0], 'config', '.songkick_api_key'), 'r').read()
 artists = json.load(open(os.path.join(Path(__file__).parents[0], 'static', 'artists.json')))
 
+
 def get_events(artist):
     """ Returns events from songkick for required artist"""
 
@@ -55,6 +56,7 @@ def get_events(artist):
 
     return results
 
+
 def dump_events(artists=artists):
     """ Dump events on dist"""
     results = []
@@ -78,3 +80,20 @@ def load_events():
 
     with open(cache, 'rb') as f:
         return pickle.load(f)
+
+
+def get_events_by_artist_id(artist_id):
+    url = f'https://api.songkick.com/api/3.0/artists/{artist_id}/calendar.json?apikey={api_key}'
+    res = requests.get(url).json()
+
+    status_ok = res['resultsPage']['status'] == 'ok'
+    events_exists = 'event' in res['resultsPage']['results']
+
+    if status_ok and events_exists:
+        events = res['resultsPage']['results']['event']
+
+        return events
+
+
+print(get_events_by_artist_id(("Mono", 201140)))
+
