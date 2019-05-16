@@ -1,24 +1,25 @@
-import json
-import os
-from pathlib import Path
-
+import timetable
 import songkick
-import calendarific
-from static import events, skip_ctry, artists
+import json
+
+
+from tools import Event, Date, wrap_events
 
 
 def default_model():
+    result = []
+    raw_events = songkick.load_events()
+    fmt_events = wrap_events(raw_events)
+    nonwork = timetable.get_nonwork()
 
-    for event in sorted(events, key=lambda e: e.date):
-        if event.country not in skip_ctry\
-                and event.type in ('Concert', 'Holiday'):
-            print(event)
+    for event in fmt_events:
+        if event.date in nonwork:
+            result.append(Date(event.date, event, True))
+        result.append(Date(event.date, event, False))
+
+    return result
 
 
-# calendarific.dump_holidays()
-# songkick.dump_events()
-default_model()
-#
-# songkick.dump_events(artists)
+print(default_model())
 
 

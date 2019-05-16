@@ -11,6 +11,15 @@ import datetime
 import time
 
 
+class Date:
+    def __init__(self, date, event, nonwork):
+        self.date = date
+        self.event = event
+        self.nonwork = nonwork
+
+    def __repr__(self):
+        return f'{self.date}, {self.event}, {self.nonwork}'
+
 
 class Event:
 
@@ -25,9 +34,13 @@ class Event:
         self.country = country
         self.city = city
 
-    def __repr__(self):
+    def __str__(self):
         return '{:15} {} {:10} {:20} {}'\
             .format(self.artist, self.date, self.date.strftime("%A"), self.city, self.country)
+
+    def __repr__(self):
+        return f'Event({self.artist}, {self.artists}, {self.display}, {self.date},' \
+               f' {self.type}, {self.uri}, {self.venue}, {self.country}, {self.city})'
 
 
 class Frame:
@@ -77,24 +90,21 @@ def timeit(method):
     return timed
 
 
-def wrap_events(artist_name, events):
-    results = []
+def wrap_events(events):
+        result = []
 
-    for event in events:
-        event_artists = [e['displayName'] for e in event['performance']]
-        event_display = event['displayName']
-        event_date = datetime.datetime.strptime(event['start']['date'], '%Y-%m-%d').date()
-        event_type = event['type']
-        event_uri = event['uri']
-        event_venue = event['venue']['displayName']
-        event_country = event['venue']['metroArea']['country']['displayName']
-        event_city = event['venue']['metroArea']['displayName']
+        for event in events:
+            artist, details = event
+            event_artists = [e['displayName'] for e in details['performance']]
+            event_display = details['displayName']
+            event_date = datetime.datetime.strptime(details['start']['date'], '%Y-%m-%d').date()
+            event_type = details['type']
+            event_uri = details['uri']
+            event_venue = details['venue']['displayName']
+            event_country = details['venue']['metroArea']['country']['displayName']
+            event_city = details['venue']['metroArea']['displayName']
 
-        results.append(Event(artist_name, event_artists, event_display, event_date, event_type,
-                             event_uri, event_venue, event_country, event_city))
+            result.append(Event(artist, event_artists, event_display, event_date, event_type,
+                                event_uri, event_venue, event_country, event_city))
 
-    return results
-
-
-def fetch_artists_id(artists):
-    return artists.keys()
+        return result

@@ -28,7 +28,9 @@ def get_events(artists):
 
         if status_ok and events_exists:
             events = res['resultsPage']['results']['event']
-            result.append((artist_name, events))
+
+            for event in events:
+                result.append((artist_name, event))
 
     return result
 

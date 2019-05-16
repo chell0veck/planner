@@ -29,6 +29,17 @@ def get_holidays():
     return out
 
 
+def get_nonwork(year=datetime.datetime.today().year):
+    raw_holidays = load_holidays()
+    fmt_holidays = [fetch_date(dt) for dt in raw_holidays]
+    weekends = [(datetime.date(year, 1, 1) + datetime.timedelta(i)) for i in range(365)
+                if (datetime.date(year, 1, 1) + datetime.timedelta(i)).weekday() in (5, 6)
+                and (datetime.date(year, 1, 1) + datetime.timedelta(i)).year == year]
+    nonwork = fmt_holidays + weekends
+
+    return sorted(set(nonwork))
+
+
 def dump_holidays():
     """ Dump holidays """
     holidays = get_holidays()
@@ -41,3 +52,8 @@ def load_holidays():
     """ Load holidays from the file"""
     with open(CACHE, 'r') as f:
         return json.load(f)
+
+
+def fetch_date(date_time_str):
+    date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d').date()
+    return date_time_obj
