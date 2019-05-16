@@ -98,6 +98,3 @@ def wrap_events(artist_name, events):
 
 def fetch_artists_id(artists):
     return artists.keys()
-
-from static import artists
-print(artists)
