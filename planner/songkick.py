@@ -9,25 +9,18 @@ Functions:
 """
 
 
-import os
-import datetime
 import requests
-import pickle
 import json
 
-from pathlib import Path
-
-from tools import Event, timeit
-
 API_KEY = open('.songkick_api_key', 'r').read()
-CACHE = os.path.join(Path(__file__).parents[0], '_static_events.json')
+CACHE = '_static_events.json'
 
 
-def get_events_by_ids(artists):
-    out = []
+def get_events(artists):
+    result = []
 
-    for artist in set(artists):
-        url = f'https://api.songkick.com/api/3.0/artists/{artist}/calendar.json?apikey={API_KEY}'
+    for artist_name, artist_id in artists.items():
+        url = f'https://api.songkick.com/api/3.0/artists/{artist_id}/calendar.json?apikey={API_KEY}'
         res = requests.get(url).json()
 
         status_ok = res['resultsPage']['status'] == 'ok'
@@ -35,16 +28,16 @@ def get_events_by_ids(artists):
 
         if status_ok and events_exists:
             events = res['resultsPage']['results']['event']
-            out.append(events)
+            result.append((artist_name, events))
 
-    return out
-
-
-def get_events_by_name(name):
-    """ Get events by dict {'artist name': artist_id}"""
-    pass
-
-arts = [521019, 201140]
-d = {"Mono": 201140, 'smth': 222, 'abot': 33}
+    return result
 
 
+def dump_events(events, f=CACHE):
+    with open(f, 'w') as f:
+        json.dump(events, f)
+
+
+def load_events(events=CACHE):
+    with open(events, 'r') as events:
+        return json.load(events)
