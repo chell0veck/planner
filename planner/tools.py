@@ -11,14 +11,14 @@ import datetime
 import time
 
 
-class Date:
+class Day:
     def __init__(self, date, event, nonwork):
         self.date = date
         self.event = event
         self.nonwork = nonwork
 
     def __repr__(self):
-        return f'{self.date}, {self.event}, {self.nonwork}'
+        return f'{self.__class__.__name__}({self.date}, {self.event}, {self.nonwork})'
 
 
 class Event:
@@ -35,8 +35,7 @@ class Event:
         self.city = city
 
     def __str__(self):
-        return '{:15} {} {:10} {:20} {}'\
-            .format(self.artist, self.date, self.date.strftime("%A"), self.city, self.country)
+        return f'{self.artist} at {self.city}'
 
     def __repr__(self):
         return f'Event({self.artist}, {self.artists}, {self.display}, {self.date},' \
@@ -49,32 +48,15 @@ class Frame:
         self.start = start
         self.end = end
 
-        self.nonwork_days = len(holidays)
-        self.duration = (end - start + datetime.timedelta(1)).days
-        self.work_days = self.duration - self.nonwork_days
 
-        self.holidays = holidays
-        self.events = events
-        self.cities = set(event.city for event in self.events)
-        self.artists = set(event.artist for event in self.events)
-        self.countries = set(event.country for event in self.events)
+class Artist:
 
-        self.n_holidays = len(self.holidays)
-        self.n_events = len(self.events)
-        self.n_cities = len(self.cities)
-        self.n_artists = len(self.artists)
-        self.n_countries = len(self.countries)
+    def __init__(self, name, sid):
+        self.name = name
+        self.sid = sid
 
-        self.eff = round(self.nonwork_days / self.duration, 2)
-
-    def view_frame(self):
-        return [(event.artist, event.country) for event in self.events]
-
-    def __str__(self):
-        return '{} - {}, days:{:2}  work:{:2} efficiency:{:2}'.format(self.start.strftime('%a %d %b'),
-                                                                      self.end.strftime('%a %d %b'),
-                                                                      self.duration, self.work_days,
-                                                                      self.eff)
+    def __repr__(self):
+        return f'{self.__class__.__name__}({self.name}, {self.sid})'
 
 
 def timeit(method):
@@ -90,7 +72,7 @@ def timeit(method):
     return timed
 
 
-def wrap_events(events):
+def wrap_events(events, skip_ctry):
         result = []
 
         for event in events:
@@ -104,7 +86,9 @@ def wrap_events(events):
             event_country = details['venue']['metroArea']['country']['displayName']
             event_city = details['venue']['metroArea']['displayName']
 
-            result.append(Event(artist, event_artists, event_display, event_date, event_type,
-                                event_uri, event_venue, event_country, event_city))
+            if event_country not in skip_ctry:
+
+                result.append(Event(artist, event_artists, event_display, event_date, event_type,
+                                    event_uri, event_venue, event_country, event_city))
 
         return result

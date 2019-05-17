@@ -12,34 +12,46 @@ Functions:
 import requests
 import json
 
-API_KEY = open('.songkick_api_key', 'r').read()
-CACHE = '_static_events.json'
+from tools import Artist
 
 
-def get_events(artists):
-    result = []
+class Api:
 
-    for artist_name, artist_id in artists.items():
-        url = f'https://api.songkick.com/api/3.0/artists/{artist_id}/calendar.json?apikey={API_KEY}'
-        res = requests.get(url).json()
+    def __init__(self, artist):
+        self.api_key = open('.songkick_api_key', 'r').read()
+        self.url_tml = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'
+        self.cache = '_static_events.json'
+        self.artist = artist
 
-        status_ok = res['resultsPage']['status'] == 'ok'
-        events_exists = 'event' in res['resultsPage']['results']
+    @property
+    def url(self):
+        url = self.url_tml.format(self.artist.sid, self.api_key)
+        return url
 
-        if status_ok and events_exists:
-            events = res['resultsPage']['results']['event']
+    @property
+    def data(self):
+        url = self.url
+        data = requests.get(url).json()
+        return data
 
-            for event in events:
-                result.append((artist_name, event))
+    @property
+    def valid_data(self):
+        data = self.data
+        status_ok = data['resultsPage']['status'] == 'ok'
+        events_exist = 'event' in data['resultsPage']['results']
+        return status_ok and events_exist
 
-    return result
+    def get_events(self):
+        if self.valid_data:
+            events = self.data['resultsPage']['results']['event']
+            return [(self.artist.name, event) for event in events]
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}({self.artist})'
 
 
-def dump_events(events, f=CACHE):
-    with open(f, 'w') as f:
-        json.dump(events, f)
+arts = Artist('Mono', 201140)
+sng_in = Api(arts)
 
 
-def load_events(events=CACHE):
-    with open(events, 'r') as events:
-        return json.load(events)
+print(sng_in.get_events())

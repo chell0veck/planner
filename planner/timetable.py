@@ -6,14 +6,14 @@ import os
 from pathlib import Path
 
 
-API_KEY = open('.calendarific_api_key', 'r').read()
-PARAMS = {'api_key': API_KEY, 'country': 'ua', 'year': datetime.datetime.today().year}
-CACHE = os.path.join(Path(__file__).parents[0], '_static_holidays.json')
-URL = 'https://calendarific.com/api/v2/holidays'
+api_key = open('.calendarific_api_key', 'r').read()
+params = {'api_key': api_key, 'country': 'ua', 'year': datetime.datetime.today().year}
+json_cache = os.path.join(Path(__file__).parents[0], '_static_holidays.json')
+url = 'https://calendarific.com/api/v2/holidays'
 
 
 def get_holidays():
-    res = requests.get(url=URL, params=PARAMS)
+    res = requests.get(url=url, params=params)
     out = []
 
     if res.status_code == 200:
@@ -31,7 +31,7 @@ def get_holidays():
 
 def get_nonwork(year=datetime.datetime.today().year):
     raw_holidays = load_holidays()
-    fmt_holidays = [fetch_date(dt) for dt in raw_holidays]
+    fmt_holidays = [convert_date(dt) for dt in raw_holidays]
     weekends = [(datetime.date(year, 1, 1) + datetime.timedelta(i)) for i in range(365)
                 if (datetime.date(year, 1, 1) + datetime.timedelta(i)).weekday() in (5, 6)
                 and (datetime.date(year, 1, 1) + datetime.timedelta(i)).year == year]
@@ -44,16 +44,16 @@ def dump_holidays():
     """ Dump holidays """
     holidays = get_holidays()
 
-    with open(CACHE, 'w') as f:
+    with open(json_cache, 'w') as f:
         json.dump(holidays, f)
 
 
 def load_holidays():
     """ Load holidays from the file"""
-    with open(CACHE, 'r') as f:
+    with open(json_cache, 'r') as f:
         return json.load(f)
 
 
-def fetch_date(date_time_str):
+def convert_date(date_time_str):
     date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d').date()
     return date_time_obj
