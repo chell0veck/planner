@@ -1,10 +1,8 @@
 """Create songkick API interface.
 
 Functions:
-
-    get_events(tuple) -> list
-    dump_events(dict) -> serialing to ../resources/songkick_events.pickle
-    load_events(file) -> object
+    fetch_artist
+    fetch_artists
 
 """
 
@@ -12,46 +10,47 @@ Functions:
 import requests
 import json
 
-from tools import Artist
+url_tml = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'
+api_key = open('.songkick_api_key', 'r').read()
+cache = '_static_events.json'
 
 
-class Api:
+def fetch_artist(artist):
+    url = _build_url(artist)
+    data = requests.get(url).json()
+    data_valid = _validate_response(data)
 
-    def __init__(self, artist):
-        self.api_key = open('.songkick_api_key', 'r').read()
-        self.url_tml = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'
-        self.cache = '_static_events.json'
-        self.artist = artist
-
-    @property
-    def url(self):
-        url = self.url_tml.format(self.artist.sid, self.api_key)
-        return url
-
-    @property
-    def data(self):
-        url = self.url
-        data = requests.get(url).json()
-        return data
-
-    @property
-    def valid_data(self):
-        data = self.data
-        status_ok = data['resultsPage']['status'] == 'ok'
-        events_exist = 'event' in data['resultsPage']['results']
-        return status_ok and events_exist
-
-    def get_events(self):
-        if self.valid_data:
-            events = self.data['resultsPage']['results']['event']
-            return [(self.artist.name, event) for event in events]
-
-    def __repr__(self):
-        return f'{self.__class__.__name__}({self.artist})'
+    if data_valid:
+        events = data['resultsPage']['results']['event']
+        return [(artist.name, event) for event in events]
 
 
-arts = Artist('Mono', 201140)
-sng_in = Api(arts)
+def fetch_artists(artists):
+    out = []
+
+    for artist in artists:
+        events = fetch_artist(artist)
+        out.append(events)
+
+    return out
 
 
-print(sng_in.get_events())
+def _build_url(artist, token=api_key):
+    url = url_tml.format(artist.sid, token)
+    return url
+
+
+def _validate_response(data):
+    response_ok = data['resultsPage']['status'] == 'ok'
+    events_exist = 'event' in data['resultsPage']['results']
+    return response_ok and events_exist
+
+
+def dump_cache(obj):
+    with open(cache) as fp:
+        json.dump(obj, fp)
+
+
+def load_cache():
+    with open(cache) as fp:
+        return json.load(fp)
