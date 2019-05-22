@@ -8,7 +8,9 @@
  """
 
 import datetime
+import holidays
 import time
+import json
 
 
 class Day:
@@ -35,7 +37,7 @@ class Event:
         self.city = city
 
     def __str__(self):
-        return f'{self.artist} at {self.city}'
+        return f'{self.artist} at {self.city}, {self.country} on {self.date}'
 
     def __repr__(self):
         return f'Event({self.artist}, {self.artists}, {self.display}, {self.date},' \
@@ -44,9 +46,11 @@ class Event:
 
 class Frame:
 
-    def __init__(self, start, end, events, holidays):
-        self.start = start
-        self.end = end
+    def __init__(self, year):
+        self.start = datetime.date(year, 1, 1)
+        self.end = datetime.date(year, 12, 31)
+        self.nonwk = get_nonwork(year)
+        # self.raw_events =
 
 
 class Artist:
@@ -57,7 +61,6 @@ class Artist:
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.name}, {self.sid})'
-
 
 def timeit(method):
 
@@ -91,4 +94,24 @@ def wrap_events(events, skip_ctry):
                 result.append(Event(artist, event_artists, event_display, event_date, event_type,
                                     event_uri, event_venue, event_country, event_city))
 
-        return result
+        return sorted(result, key=lambda e: e.date)
+
+
+def wrap_artists(artists):
+    return [Artist(artist, artists[artist]) for artist in artists]
+
+
+def load_artists(artists):
+
+    with open(artists, 'r') as fp:
+        return json.load(fp)
+
+
+def get_nonwork(year=datetime.datetime.today().year):
+    hols = [dt for dt in holidays.UA(years=year)]
+    f_dy = datetime.date(year, 1, 1)
+    wkds = [(f_dy + datetime.timedelta(i)) for i in range(370) if (f_dy + datetime.timedelta(i)).weekday() in (5, 6)
+            and (f_dy + datetime.timedelta(i)).year == year]
+    nwrk = hols + wkds
+
+    return sorted(nwrk)

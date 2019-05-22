@@ -1,28 +1,25 @@
 import json
+import songkick as sgk
 
-import timetable
-import songkick
-import tools
-
-
-skip_ctry = json.load(open('_static_skip_ctry.json', 'r'))
+from utils import Frame, wrap_events, wrap_artists
 
 
-def all_events():
-    result = []
-    raw_events = songkick.load_events()
-    fmt_events = tools.wrap_events(raw_events, skip_ctry)
-    nonwork = timetable.get_nonwork()
-
-    for event in fmt_events:
-        if event.date in nonwork:
-            result.append(tools.Day(event.date, event, True))
-        result.append(tools.Day(event.date, event, False))
-
-    return result
+def refresh_cache():
+    raw_artists = json.load(open('_static_artists.json'))
+    fmt_artists = wrap_artists(raw_artists)
+    raw_events = sgk.get_events(fmt_artists)
+    sgk.dump_cache(raw_events)
 
 
-artists = json.load(open('_static_artists.json', 'r'))
-# print(artists)
-events = songkick.Api(artists)
-print(events.load_cache())
+def load_cache():
+    skip_ctrys = json.load(open('_static_skip_ctry.json'))
+    raw_events = sgk.load_cache()
+    fmt_events = wrap_events(raw_events, skip_ctrys)
+    return fmt_events
+
+
+events = load_cache()
+
+for event in events:
+    # if event.date.month in (6, ):
+    print(event)
