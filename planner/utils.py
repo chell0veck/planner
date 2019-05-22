@@ -116,6 +116,3 @@ def get_nonwork(year=datetime.datetime.today().year):
     nwrk = hols + wkds
 
     return sorted(nwrk)
-
-
-

@@ -33,8 +33,24 @@ def get_events(artists):
     return out
 
 
+def load_events():
+
+    if _cache_is_stale():
+        refresh_cache()
+
+    events = load_cache()
+    return events
+
+
+def refresh_cache():
+    raw_artists = json.load(open('_static_artists.json'))
+    fmt_artists = wrap_artists(raw_artists)
+    raw_events = get_events(fmt_artists)
+    dump_cache(raw_events)
+
+
 def dump_cache(obj):
-    timestamp = datetime.datetime.now().timestamp()
+    timestamp = datetime.datetime.now()
 
     with open(cache, 'w') as fp:
         json.dump(obj, fp)
@@ -59,28 +75,12 @@ def _validate_data(data):
     return response_ok and events_exist
 
 
-def refresh_cache():
-    raw_artists = json.load(open('_static_artists.json'))
-    fmt_artists = wrap_artists(raw_artists)
-    raw_events = get_events(fmt_artists)
-    dump_cache(raw_events)
-
-
 def _cache_is_stale():
     cache_file = '_static_events.time'
-    cache_time = float(open(cache_file, 'r').read())
-    current_time = datetime.datetime.now().timestamp()
-    cache_age = current_time - cache_time
-    cache_is_stale = True if cache_age > 1 else False
-    return cache_is_stale
-
-
-def load_events():
-
-    if _cache_is_stale():
-        refresh_cache()
-
-    events = load_cache()
-    return events
-
-
+    cache_raw_time = open(cache_file, 'r').read()
+    cache_time = datetime.datetime.fromisoformat(cache_raw_time)
+    print(cache_time)
+    # current_time = datetime.datetime.now().timestamp()
+    # cache_age = current_time - cache_time
+    # cache_is_stale = True if cache_age > 1 else False
+    # return cache_is_stale
