@@ -5,9 +5,11 @@ Functions:
     fetch_artists
 
 """
-
+import datetime
 import requests
 import json
+
+from utils import wrap_artists, wrap_events
 
 
 url_tml = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'
@@ -32,17 +34,53 @@ def get_events(artists):
 
 
 def dump_cache(obj):
+    timestamp = datetime.datetime.now().timestamp()
+
     with open(cache, 'w') as fp:
         json.dump(obj, fp)
 
+    with open('_static_events.time','w') as cache_time:
+        cache_time.write(str(timestamp))
+
 
 def load_cache():
+    skip_ctrys = json.load(open('_static_skip_ctry.json'))
+
     with open(cache, 'r') as fp:
-        return json.load(fp)
+        raw_events = json.load(fp)
+
+    fmt_events = wrap_events(raw_events, skip_ctrys)
+    return fmt_events
 
 
 def _validate_data(data):
     response_ok = data['resultsPage']['status'] == 'ok'
     events_exist = 'event' in data['resultsPage']['results']
     return response_ok and events_exist
+
+
+def refresh_cache():
+    raw_artists = json.load(open('_static_artists.json'))
+    fmt_artists = wrap_artists(raw_artists)
+    raw_events = get_events(fmt_artists)
+    dump_cache(raw_events)
+
+
+def _cache_is_stale():
+    cache_file = '_static_events.time'
+    cache_time = float(open(cache_file, 'r').read())
+    current_time = datetime.datetime.now().timestamp()
+    cache_age = current_time - cache_time
+    cache_is_stale = True if cache_age > 1 else False
+    return cache_is_stale
+
+
+def load_events():
+
+    if _cache_is_stale():
+        refresh_cache()
+
+    events = load_cache()
+    return events
+
 

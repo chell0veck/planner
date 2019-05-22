@@ -62,14 +62,15 @@ class Artist:
     def __repr__(self):
         return f'{self.__class__.__name__}({self.name}, {self.sid})'
 
-def timeit(method):
 
-    def timed(*args):
+def timeit(func):
+
+    def timed():
         ts = time.time()
-        result = method(*args)
+        result = func()
         te = time.time()
         ws = (te-ts) % 60
-        print('{}({}) took {:.2} seconds'.format(method.__name__, *args, ws))
+        print('{} took {:.2} seconds'.format(func.__name__, ws))
         return result
 
     return timed
@@ -115,3 +116,6 @@ def get_nonwork(year=datetime.datetime.today().year):
     nwrk = hols + wkds
 
     return sorted(nwrk)
+
+
+
