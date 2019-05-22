@@ -18,8 +18,9 @@ def load_cache():
     return fmt_events
 
 
+# refresh_cache()
 events = load_cache()
 
 for event in events:
-    # if event.date.month in (6, ):
-    print(event)
+    if event.date.month in (5, 6):
+        print(event)

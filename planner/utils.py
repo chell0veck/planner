@@ -37,7 +37,7 @@ class Event:
         self.city = city
 
     def __str__(self):
-        return f'{self.artist} at {self.city}, {self.country} on {self.date}'
+        return f'{self.date}, {self.artist} in {self.city}, {self.country}'
 
     def __repr__(self):
         return f'Event({self.artist}, {self.artists}, {self.display}, {self.date},' \
