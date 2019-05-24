@@ -58,7 +58,7 @@ def dump_cache(obj):
         json.dump(obj, cd)
 
     with open(cache_time, 'w') as ct:
-        ct.write(str(timestamp.astimezone()))
+        ct.write(str(timestamp.utcnow()))
 
 
 def load_cache():
@@ -74,12 +74,12 @@ def _validate_data(data):
 
 
 def _check_cache():
-    ctime = datetime.datetime.fromisoformat(open(cache_time, 'r').read())
-    now = datetime.datetime.now().astimezone()
-    diff = now - ctime
+    cache_utc_time = datetime.datetime.strptime(open(cache_time, 'r').read(), '%Y-%m-%d %H:%M:%S.%f')
+    curr_utc_time = datetime.datetime.utcnow()
+
+    diff = curr_utc_time - cache_utc_time
 
     if diff.days >= 1:
         return True
 
     return False
-
