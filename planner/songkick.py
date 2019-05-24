@@ -11,7 +11,7 @@ import requests
 import json
 
 from utils import wrap_artists, wrap_events
-from config import sgk_api_url, sgk_api_key, skip_ctrys, artists, cache_data, cache_time
+from config import sgk_api_url, sgk_api_key, skip_countries, artists, cache_data, cache_time
 
 
 def get_events(artists):
@@ -31,7 +31,7 @@ def get_events(artists):
 
 
 def load_events():
-    skip = json.load(open(skip_ctrys))
+    skip = json.load(open(skip_countries))
 
     cache_is_stale = _check_cache()
 
@@ -82,9 +82,4 @@ def _check_cache():
         return True
 
     return False
-
-
-events = load_events()
-for event in events:
-    print(event)
 
