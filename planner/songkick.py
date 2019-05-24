@@ -11,22 +11,14 @@ import requests
 import json
 
 from utils import wrap_artists, wrap_events
-import utils
-
-
-url_tml = 'https://api.songkick.com/api/3.0/artists/{}/calendar.json?apikey={}'
-api_key = open('.songkick_api_key', 'r').read()
-skip_ctrys = '_static_skip_ctry.json'
-cache_data = '_static_events.json'
-cache_time = '_static_events.time'
-artists = '_static_artists.json'
+from config import sgk_api_url, sgk_api_key, skip_ctrys, artists, cache_data, cache_time
 
 
 def get_events(artists):
     out = []
 
     for artist in artists:
-        url = url_tml.format(artist.sid, api_key)
+        url = sgk_api_url.format(artist.sid, sgk_api_key)
         data = requests.get(url).json()
         data_valid = _validate_data(data)
 
@@ -41,7 +33,7 @@ def get_events(artists):
 def load_events():
     skip = json.load(open(skip_ctrys))
 
-    cache_is_stale = check_cache()
+    cache_is_stale = _check_cache()
 
     if cache_is_stale:
         refresh_cache()
@@ -62,11 +54,11 @@ def refresh_cache():
 def dump_cache(obj):
     timestamp = datetime.datetime.now()
 
-    with open(cache_data, 'w') as fp:
-        json.dump(obj, fp)
+    with open(cache_data, 'w') as cd:
+        json.dump(obj, cd)
 
-    with open('_static_events.time', 'w') as cache_time:
-        cache_time.write(str(timestamp))
+    with open(cache_time, 'w') as ct:
+        ct.write(str(timestamp.astimezone()))
 
 
 def load_cache():
@@ -81,9 +73,9 @@ def _validate_data(data):
     return response_ok and events_exist
 
 
-def check_cache():
+def _check_cache():
     ctime = datetime.datetime.fromisoformat(open(cache_time, 'r').read())
-    now = datetime.datetime.now()
+    now = datetime.datetime.now().astimezone()
     diff = now - ctime
 
     if diff.days >= 1:
@@ -92,4 +84,7 @@ def check_cache():
     return False
 
 
+events = load_events()
+for event in events:
+    print(event)
 

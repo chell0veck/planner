@@ -2,43 +2,44 @@ import datetime
 
 from collections import defaultdict
 
+from config import separator
 
-def view_by_artist(events):
+
+def view_by_artist(events, sep=separator):
     container = defaultdict(list)
-    template = '\n ------ {} ------'
 
     for event in events:
         container[event.artist].append(event)
 
     for artist in container:
-        print(template.format(artist))
+        print(sep.format(artist))
 
         for event in container[artist]:
-            print(event)
+                print(event)
 
 
-def view_by_month(events):
+def view_by_month(events, sep=separator):
     container = defaultdict(list)
-    template = '\n ------ {} ------'
 
     for event in events:
         month = datetime.date.strftime(event.date, '%B')
         container[month].append(event)
 
     for month in container:
-        print(template.format(month))
+        print(sep.format(month))
 
         for event in container[month]:
             print(event)
 
 
-def view_by_country(events):
+def view_by_country(events, sep=separator):
     container = defaultdict(list)
-    template = '\n ------ {} ------'
-    events = [container[event.country].append(event) for event in events]
 
-    for header in events:
-        print(template.format(header))
+    for event in events:
+        container[event.country].append(event)
 
-        for event in container[header]:
+    for country in container:
+        print(sep.format(country))
+
+        for event in container[country]:
             print(event)
