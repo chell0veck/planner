@@ -13,10 +13,10 @@ import datetime
 
 from collections import defaultdict
 
-from config import separator
+from config import SEPARATOR
 
 
-def view_by_artist(events, sep=separator):
+def view_by_artist(events, sep=SEPARATOR):
     """
     Print sorted list of Event object sorted by artist
     :param events: list of Event objects
@@ -32,10 +32,10 @@ def view_by_artist(events, sep=separator):
         print(sep.format(artist))
 
         for event in container[artist]:
-                print(event)
+            print(event)
 
 
-def view_by_month(events, sep=separator):
+def view_by_month(events, sep=SEPARATOR):
     """
     Print sorted list of Event object sorted by month
     :param events: list of Event objects
@@ -55,7 +55,7 @@ def view_by_month(events, sep=separator):
             print(event)
 
 
-def view_by_country(events, sep=separator):
+def view_by_country(events, sep=SEPARATOR):
     """
     Print sorted list of Event object sorted by country
     :param events: list of Event objects

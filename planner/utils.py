@@ -19,7 +19,8 @@ import time
 import json
 
 import holidays
-from config import artists
+from config import ARTISTS
+
 
 class Artist:
     """
@@ -52,9 +53,9 @@ class Event:
     Data type that holds event
     """
 
-    def __init__(self, artist, artists, display, date, event_type, uri, venue, country, city):
+    def __init__(self, artist, arts, display, date, event_type, uri, venue, country, city):
         self.artist = artist
-        self.artists = artists
+        self.artists = arts
         self.display = display
         self.date = date
         self.type = event_type
@@ -70,19 +71,6 @@ class Event:
         return f'{self.__class__.__name__}({self.artist}, {self.artists}, {self.display},' \
                f' {self.date},{self.type}, {self.uri}, {self.venue}, {self.country}, {self.city})'
 
-
-class Frame:
-    """
-    To be defined still
-    """
-
-    def __init__(self, year):
-        self.start = datetime.date(year, 1, 1)
-        self.end = datetime.date(year, 12, 31)
-        self.nonwk = get_nonwork(year)
-        # self.raw_events =
-
-
 def timeit(func):
     """
     Maybe not bad implemented timer
@@ -91,11 +79,11 @@ def timeit(func):
     """
 
     def timed():
-        ts = time.time()
+        time_start = time.time()
         result = func()
-        te = time.time()
-        ws = (te-ts) % 60
-        print('{} took {:.2} seconds'.format(func.__name__, ws))
+        time_end = time.time()
+        waisted_seconds = (time_end-time_start) % 60
+        print('{} took {:.2} seconds'.format(func.__name__, waisted_seconds))
         return result
 
     return timed
@@ -128,24 +116,24 @@ def wrap_events(events, skip_ctry):
     return sorted(result, key=lambda e: e.date)
 
 
-def wrap_artists(artists):
+def wrap_artists(arts):
     """
     Wraps artist loaded from the disk into Artist object
-    :param artists: dict(artist_name: artist_id)
+    :param arts: dict(artist_name: artist_id)
     :return: list
     """
-    return [Artist(artist, artists[artist]) for artist in artists]
+    return [Artist(artist, arts[artist]) for artist in arts]
 
 
-def load_artists(arts=artists):
+def load_artists(arts=ARTISTS):
     """
     Load artists info from the static
     :param arts: json cache file
     :return: dict
     """
 
-    with open(arts, 'r') as fp:
-        return json.load(fp)
+    with open(arts) as static_artists:
+        return json.load(static_artists)
 
 
 def get_nonwork(year=datetime.datetime.today().year):

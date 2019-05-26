@@ -16,11 +16,12 @@ System functions:
 """
 
 import datetime
-import requests
 import json
 
+import requests
+
 from utils import wrap_artists, wrap_events
-from config import sgk_api_url, sgk_api_key, skip_countries, artists, cache_data, cache_time
+from config import SGK_API_URL, SGK_API_KEY, SKIP_COUNTRIES, ARTISTS, CACHE_DATA, CACHE_TIME
 
 
 def get_events(artists):
@@ -35,7 +36,7 @@ def get_events(artists):
     out = []
 
     for artist in artists:
-        url = sgk_api_url.format(artist.sid, sgk_api_key)
+        url = SGK_API_URL.format(artist.sid, SGK_API_KEY)
         data = requests.get(url).json()
         data_valid = _response_is_valid(data)
 
@@ -56,7 +57,7 @@ def load_events():
 
     :return: list
     """
-    skip = json.load(open(skip_countries))
+    skip = json.load(open(SKIP_COUNTRIES))
 
     cache_is_stale = _cache_is_stale()
 
@@ -73,7 +74,7 @@ def refresh_cache():
     """
     Refresh the cache.
     """
-    raw_artists = json.load(open(artists))
+    raw_artists = json.load(open(ARTISTS))
     fmt_artists = wrap_artists(raw_artists)
     raw_events = get_events(fmt_artists)
     dump_cache(raw_events)
@@ -88,11 +89,11 @@ def dump_cache(obj):
     """
     timestamp = datetime.datetime.now()
 
-    with open(cache_data, 'w') as cd:
-        json.dump(obj, cd)
+    with open(CACHE_DATA, 'w') as c_d:
+        json.dump(obj, c_d)
 
-    with open(cache_time, 'w') as ct:
-        ct.write(str(timestamp.utcnow()))
+    with open(CACHE_TIME, 'w') as c_t:
+        c_t.write(str(timestamp.utcnow()))
 
 
 def load_cache():
@@ -102,8 +103,8 @@ def load_cache():
     :return: list
     """
 
-    with open(cache_data) as c:
-        return json.load(c)
+    with open(CACHE_DATA) as c_d:
+        return json.load(c_d)
 
 
 def _response_is_valid(data):
@@ -124,7 +125,8 @@ def _cache_is_stale():
 
     :return: bool
     """
-    cache_utc_time = datetime.datetime.strptime(open(cache_time, 'r').read(), '%Y-%m-%d %H:%M:%S.%f')
+    cache_utc_time = datetime.datetime.strptime(open(CACHE_TIME, 'r').read(),
+                                                '%Y-%m-%d %H:%M:%S.%f')
     curr_utc_time = datetime.datetime.utcnow()
 
     diff = curr_utc_time - cache_utc_time
