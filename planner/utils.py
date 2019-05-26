@@ -15,11 +15,11 @@
  """
 
 import datetime
-import holidays
 import time
 import json
 
-from config import artists
+import holidays
+from config import artists, skip_countries
 
 
 class Artist:
@@ -68,8 +68,8 @@ class Event:
         return f'{self.date}, {self.artist} in {self.city}, {self.country}'
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({self.artist}, {self.artists}, {self.display}, {self.date},' \
-               f' {self.type}, {self.uri}, {self.venue}, {self.country}, {self.city})'
+        return f'{self.__class__.__name__}({self.artist}, {self.artists}, {self.display},' \
+               f' {self.date},{self.type}, {self.uri}, {self.venue}, {self.country}, {self.city})'
 
 
 class Frame:
@@ -123,11 +123,10 @@ def wrap_events(events, skip_ctry):
         event_city = details['venue']['metroArea']['displayName']
 
         if event_country not in skip_ctry:
-
             result.append(Event(artist, event_artists, event_display, event_date, event_type,
                                 event_uri, event_venue, event_country, event_city))
 
-        return sorted(result, key=lambda e: e.date)
+    return sorted(result, key=lambda e: e.date)
 
 
 def wrap_artists(artists):
@@ -158,10 +157,9 @@ def get_nonwork(year=datetime.datetime.today().year):
     """
     _holidays = [dt for dt in holidays.UA(years=year)]
     first_day = datetime.date(year, 1, 1)
-    weekdays = [(first_day + datetime.timedelta(i)) for i in range(370) if (first_day + datetime.timedelta(i)).weekday() in (5, 6)
-            and (first_day + datetime.timedelta(i)).year == year]
+    weekdays = [(first_day + datetime.timedelta(i)) for i in range(370)
+                if (first_day + datetime.timedelta(i)).weekday() in (5, 6)
+                and (first_day + datetime.timedelta(i)).year == year]
     non_working_days = _holidays + weekdays
 
     return sorted(non_working_days)
-
-
