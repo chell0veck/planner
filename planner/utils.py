@@ -19,8 +19,7 @@ import time
 import json
 
 import holidays
-from config import artists, skip_countries
-
+from config import artists
 
 class Artist:
     """
