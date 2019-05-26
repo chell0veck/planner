@@ -1,10 +1,17 @@
-""" Additional datatypes.
+""" Supported data types and functions
 
     Classes:
+        Artist
+        Day
+        Event
+        Frame
 
-    Event
-    Frame
-
+    Functions:
+        timeit
+        wrap_events
+        wrap_artists
+        load_artists
+        get_nonwork
  """
 
 import datetime
@@ -12,8 +19,13 @@ import holidays
 import time
 import json
 
+from config import artists
+
 
 class Artist:
+    """
+    Artist class holds artist as name and songkick id
+    """
 
     def __init__(self, name, sid):
         self.name = name
@@ -24,6 +36,9 @@ class Artist:
 
 
 class Day:
+    """
+    To be defined still
+    """
     def __init__(self, date, event, nonwork):
         self.date = date
         self.event = event
@@ -34,6 +49,9 @@ class Day:
 
 
 class Event:
+    """
+    Data type that holds event
+    """
 
     def __init__(self, artist, artists, display, date, event_type, uri, venue, country, city):
         self.artist = artist
@@ -55,6 +73,9 @@ class Event:
 
 
 class Frame:
+    """
+    To be defined still
+    """
 
     def __init__(self, year):
         self.start = datetime.date(year, 1, 1)
@@ -64,6 +85,11 @@ class Frame:
 
 
 def timeit(func):
+    """
+    Maybe not bad implemented timer
+    :param func:
+    :return:
+    """
 
     def timed():
         ts = time.time()
@@ -77,38 +103,59 @@ def timeit(func):
 
 
 def wrap_events(events, skip_ctry):
-        result = []
+    """
+    Wrap events into Event object and filter by the skip counties
+    :param events: list
+    :param skip_ctry: list
+    :return: list
+    """
+    result = []
 
-        for event in events:
-            artist, details = event
-            event_artists = [e['displayName'] for e in details['performance']]
-            event_display = details['displayName']
-            event_date = datetime.datetime.strptime(details['start']['date'], '%Y-%m-%d').date()
-            event_type = details['type']
-            event_uri = details['uri']
-            event_venue = details['venue']['displayName']
-            event_country = details['venue']['metroArea']['country']['displayName']
-            event_city = details['venue']['metroArea']['displayName']
+    for event in events:
+        artist, details = event
+        event_artists = [e['displayName'] for e in details['performance']]
+        event_display = details['displayName']
+        event_date = datetime.datetime.strptime(details['start']['date'], '%Y-%m-%d').date()
+        event_type = details['type']
+        event_uri = details['uri']
+        event_venue = details['venue']['displayName']
+        event_country = details['venue']['metroArea']['country']['displayName']
+        event_city = details['venue']['metroArea']['displayName']
 
-            if event_country not in skip_ctry:
+        if event_country not in skip_ctry:
 
-                result.append(Event(artist, event_artists, event_display, event_date, event_type,
-                                    event_uri, event_venue, event_country, event_city))
+            result.append(Event(artist, event_artists, event_display, event_date, event_type,
+                                event_uri, event_venue, event_country, event_city))
 
         return sorted(result, key=lambda e: e.date)
 
 
 def wrap_artists(artists):
+    """
+    Wraps artist loaded from the disk into Artist object
+    :param artists: dict(artist_name: artist_id)
+    :return: list
+    """
     return [Artist(artist, artists[artist]) for artist in artists]
 
 
-def load_artists(artists):
+def load_artists(arts=artists):
+    """
+    Load artists info from the static
+    :param arts: json cache file
+    :return: dict
+    """
 
-    with open(artists, 'r') as fp:
+    with open(arts, 'r') as fp:
         return json.load(fp)
 
 
 def get_nonwork(year=datetime.datetime.today().year):
+    """
+    To be defined
+    :param year:
+    :return:
+    """
     _holidays = [dt for dt in holidays.UA(years=year)]
     first_day = datetime.date(year, 1, 1)
     weekdays = [(first_day + datetime.timedelta(i)) for i in range(370) if (first_day + datetime.timedelta(i)).weekday() in (5, 6)
@@ -116,3 +163,5 @@ def get_nonwork(year=datetime.datetime.today().year):
     non_working_days = _holidays + weekdays
 
     return sorted(non_working_days)
+
+
