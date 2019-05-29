@@ -47,6 +47,8 @@ class Day:
     def __repr__(self):
         return f'{self.__class__.__name__}({self.date}, {self.event}, {self.nonwork})'
 
+    def __str__(self):
+        return f'{self.date}, {self.event}, {self.nonwork}'
 
 class Event:
     """
@@ -65,7 +67,7 @@ class Event:
         self.city = city
 
     def __str__(self):
-        return f'{self.date}, {self.artist} in {self.city}, {self.country}'
+        return f'{self.artist} in {self.city}, {self.country}'
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.artist}, {self.artists}, {self.display},' \
