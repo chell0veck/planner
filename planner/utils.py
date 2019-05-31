@@ -11,7 +11,7 @@
         wrap_events
         wrap_artists
         load_artists
-        get_nonwork
+        get_non_work
  """
 
 import datetime
@@ -19,6 +19,8 @@ import time
 import json
 
 import holidays
+
+
 from config import ARTISTS
 
 
@@ -50,6 +52,7 @@ class Day:
     def __str__(self):
         return f'{self.date}, {self.event}, {self.nonwork}'
 
+
 class Event:
     """
     Data type that holds event
@@ -72,6 +75,7 @@ class Event:
     def __repr__(self):
         return f'{self.__class__.__name__}({self.artist}, {self.artists}, {self.display},' \
                f' {self.date},{self.type}, {self.uri}, {self.venue}, {self.country}, {self.city})'
+
 
 def timeit(func):
     """
@@ -138,17 +142,23 @@ def load_artists(arts=ARTISTS):
         return json.load(static_artists)
 
 
-def get_nonwork(year=datetime.datetime.today().year):
-    """
-    To be defined
-    :param year:
-    :return:
-    """
-    _holidays = [dt for dt in holidays.UA(years=year)]
-    first_day = datetime.date(year, 1, 1)
-    weekdays = [(first_day + datetime.timedelta(i)) for i in range(370)
-                if (first_day + datetime.timedelta(i)).weekday() in (5, 6)
-                and (first_day + datetime.timedelta(i)).year == year]
-    non_working_days = _holidays + weekdays
 
-    return sorted(non_working_days)
+def wrap_events_into_days(events, holidays):
+    result = []
+    visited = []
+
+    for event in events:
+        if event.date in holidays:
+            result.append(Day(event.date, event, True))
+            visited.append(event.date)
+        else:
+            result.append(Day(event.date, event, False))
+
+    for holiday in holidays:
+        if holiday not in visited:
+            result.append(Day(holiday, False, True))
+
+    return result
+
+
+
