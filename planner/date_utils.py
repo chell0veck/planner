@@ -34,12 +34,19 @@ def generate_year_dates(days):
     return result
 
 
-def generate_frame(start_day, end_day, days):
-    t = [ds for ds in days if start_day <= ds.date <= end_day]
-    o = sorted(t, key=lambda d: d.date)
+def generate_frames(start_day=datetime.date.today(), end_day=None, max_range=20):
+    result = []
+    end_day = end_day if end_day is not None else datetime.date(start_day.year, 12, 31)
+    diff = (end_day-start_day-datetime.timedelta(days=max_range)).days
 
-    for i in o:
-        print(i)
+    for start in range(diff):
+        new_start_day = start_day + datetime.timedelta(days=start)
+
+        for end in range(1, max_range):
+            new_end_day = new_start_day + datetime.timedelta(days=end)
+            result.append((new_start_day, new_end_day))
+
+    return result
 
 
 def is_non_working(date: 'datetime.date') -> 'bool':
@@ -55,3 +62,9 @@ def is_non_working(date: 'datetime.date') -> 'bool':
         return True
 
     return False
+
+
+frames = generate_frames()
+
+for frame in frames:
+    print(frame)
