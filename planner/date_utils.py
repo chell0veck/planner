@@ -37,7 +37,7 @@ def generate_year_dates(days):
 def generate_frames(start_day=datetime.date.today(), end_day=None, max_range=20):
     result = []
     end_day = end_day if end_day is not None else datetime.date(start_day.year, 12, 31)
-    diff = (end_day-start_day-datetime.timedelta(days=max_range)).days
+    diff = (end_day-start_day-datetime.timedelta(days=max_range)).days + 2
 
     for start in range(diff):
         new_start_day = start_day + datetime.timedelta(days=start)
@@ -64,7 +64,31 @@ def is_non_working(date: 'datetime.date') -> 'bool':
     return False
 
 
-frames = generate_frames()
+def adjust_frame(start: 'datetime.date', end: 'datetime.date') -> 'tuple':
+    """
+    Extend given frame with nonworking days if such border with given start or end
+       adjust_frame(datetime.date(2019, 6, 24), datetime.date(2019, 6, 27)) -> (datetime.date(2019, 6, 22), datetime.date(2019, 6, 30)):
 
-for frame in frames:
-    print(frame)
+    :param start: Start day of the frame
+                June 24 2019 is Monday -> new start day is Saturday June 22 2019
+    :param end: End day of the frame
+                June 27 2019 is Thursday but June 28 is public holiday -> new end day is Sunday June 30 2019
+    :return: Adjusted frame
+
+    """
+
+    new_start = start
+    new_end = end
+
+    while is_non_working(new_start - datetime.timedelta(days=1)):
+        new_start -= datetime.timedelta(days=1)
+
+    while is_non_working(new_end + datetime.timedelta(days=1)):
+        new_end += datetime.timedelta(days=1)
+
+    return new_start, new_end
+
+
+frames = generate_frames()
+print(help(adjust_frame))
+

@@ -52,7 +52,7 @@ def view_by_month(events, sep=SEPARATOR):
         print(sep.format(month))
 
         for event in container[month]:
-            print(event)
+            print(event.date, event)
 
 
 def view_by_country(events, sep=SEPARATOR):
