@@ -5,7 +5,14 @@ import holidays
 from utils import Day
 
 
-def generate_frames(start_day=None, end_day=None, max_range=20):
+def generate_frames(start_day: 'datetime.date'=None, end_day: 'datetime.date'=None, max_range: 'int'=20) -> list:
+    """
+    Return list of tuples with possible ranges withing given start, edn and max range
+    :param start_day: start of the period
+    :param end_day: end of the period
+    :param max_range: max len of range
+    :return: list
+    """
     result = []
     start_day = start_day if start_day else datetime.date.today()
     end_day = end_day if end_day is not None else datetime.date(start_day.year + 1, 1, 1)
