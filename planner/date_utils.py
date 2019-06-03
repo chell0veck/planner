@@ -87,8 +87,3 @@ def adjust_frame(start: 'datetime.date', end: 'datetime.date') -> 'tuple':
         new_end += datetime.timedelta(days=1)
 
     return new_start, new_end
-
-
-frames = generate_frames()
-print(help(adjust_frame))
-
