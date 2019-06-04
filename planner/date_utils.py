@@ -23,6 +23,27 @@ def generate_frames(start_day: 'datetime.date' = None, end_day: 'datetime.date' 
             yield (new_start_day, new_end_day)
 
 
+def adjust_frame(frame: 'tuple') -> 'tuple':
+    """
+    Extend given frame with nonworking days if such border with given start or end
+       adjust_frame(datetime.date(2019, 6, 24), datetime.date(2019, 6, 27)) -> (datetime.date(2019, 6, 22), datetime.date(2019, 6, 30)):
+
+    :param frame: Date frame (tuple of datetime.date objects)
+
+    :return: Adjusted frame
+
+    """
+    new_start, new_end = frame
+
+    while is_non_working(new_start - datetime.timedelta(days=1)):
+        new_start -= datetime.timedelta(days=1)
+
+    while is_non_working(new_end + datetime.timedelta(days=1)):
+        new_end += datetime.timedelta(days=1)
+
+    yield new_start, new_end
+
+
 def is_non_working(date: 'datetime.date') -> 'bool':
     """
     Return True if given date is a weekend or public holiday in Ukraine
@@ -46,28 +67,3 @@ def is_non_working(date: 'datetime.date') -> 'bool':
         return True
 
     return False
-
-
-def adjust_frame(frame: 'tuple') -> 'tuple':
-    """
-    Extend given frame with nonworking days if such border with given start or end
-       adjust_frame(datetime.date(2019, 6, 24), datetime.date(2019, 6, 27)) -> (datetime.date(2019, 6, 22), datetime.date(2019, 6, 30)):
-
-    :param frame: Date frame (tuple of datetime.date objects)
-
-    :return: Adjusted frame
-
-    """
-    new_start, new_end = frame
-
-    while is_non_working(new_start - datetime.timedelta(days=1)):
-        new_start -= datetime.timedelta(days=1)
-
-    while is_non_working(new_end + datetime.timedelta(days=1)):
-        new_end += datetime.timedelta(days=1)
-
-    return new_start, new_end
-
-
-frames = generate_frames()
-

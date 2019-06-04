@@ -20,7 +20,7 @@ import json
 
 import requests
 
-from utils import wrap_artists, wrap_events
+from data_utils import wrap_artists, wrap_events
 from config import SGK_API_URL, SGK_API_KEY, SKIP_COUNTRIES, ARTISTS, CACHE_DATA, CACHE_TIME
 
 

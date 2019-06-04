@@ -18,9 +18,6 @@ import datetime
 import time
 import json
 
-import holidays
-
-
 from config import ARTISTS
 
 
@@ -77,24 +74,6 @@ class Event:
                f' {self.date},{self.type}, {self.uri}, {self.venue}, {self.country}, {self.city})'
 
 
-def timeit(func):
-    """
-    Maybe not bad implemented timer
-    :param func:
-    :return:
-    """
-
-    def timed():
-        time_start = time.time()
-        result = func()
-        time_end = time.time()
-        waisted_seconds = (time_end-time_start) % 60
-        print('{} took {:.2} seconds'.format(func.__name__, waisted_seconds))
-        return result
-
-    return timed
-
-
 def wrap_events(events, skip_ctry):
     """
     Wrap events into Event object and filter by the skip counties
@@ -140,7 +119,6 @@ def load_artists(arts=ARTISTS):
 
     with open(arts) as static_artists:
         return json.load(static_artists)
-
 
 
 def wrap_events_into_days(events, holidays):
