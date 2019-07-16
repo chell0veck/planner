@@ -6,10 +6,16 @@ import songkick as sk
 from utils import Day
 import datetime
 import holidays
+import models as md
 
 
 events = sk.load_events()
+md.view_by_artist(events)
 
+
+# for event in events:
+#     if event.artist == 'Keane':
+#         print(event, event.venue)
 
 def is_nonwork(date):
     _holidays = holidays.UA(years=2019)
@@ -35,6 +41,3 @@ def default(events, year=2019):
 
         if nonwork:
             print(day, day.strftime('%A'))
-#
-
-default(events, 2019)
