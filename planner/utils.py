@@ -47,7 +47,7 @@ class Day:
         return f'{self.__class__.__name__}({self.date}, {self.event}, {self.nonwork})'
 
     def __str__(self):
-        return '{} - {:<1} - {:<1}'.format(self.date, True if self.event else False, self.nonwork)
+        return '{} ,{:<1}, {:<1}'.format(self.date, True if self.event else False, self.nonwork)
 
 
 class Event:
