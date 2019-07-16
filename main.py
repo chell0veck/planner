@@ -3,41 +3,19 @@ Entry point of a program. So far just change the view model from md lib
 """
 
 import songkick as sk
-from utils import Day
+import utils as ut
 import datetime
-import holidays
 import models as md
 
 
 events = sk.load_events()
-md.view_by_artist(events)
+frame_str = datetime.date.today()
+frame_end = max(event.date for event in events)
+dates = ut.generate_dates(frame_str, frame_end)
+emap = ut.build_events_map(events)
+_map = list(emap)
+gomodata = ut.wrap_days(dates, emap)
 
 
-# for event in events:
-#     if event.artist == 'Keane':
-#         print(event, event.venue)
-
-def is_nonwork(date):
-    _holidays = holidays.UA(years=2019)
-
-    if date in _holidays:
-        return True
-
-    if date.weekday() in (5, 6):
-        return True
-
-    return False
-
-
-def default(events, year=2019):
-    first_day = datetime.date(year, 1, 1)
-
-    for i in range(365):
-        day = first_day + datetime.timedelta(days=i)
-
-        # print(day, is_nonwork(day), day.strftime('%A'))
-
-        nonwork = is_nonwork(day)
-
-        if nonwork:
-            print(day, day.strftime('%A'))
+for data in gomodata:
+    print(data)

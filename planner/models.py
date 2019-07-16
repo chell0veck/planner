@@ -32,7 +32,7 @@ def view_by_artist(events, sep=SEPARATOR):
         print(sep.format(artist))
 
         for event in container[artist]:
-            print(event.date, event)
+            print(event.date)
 
 
 def view_by_month(events, sep=SEPARATOR):
@@ -72,3 +72,5 @@ def view_by_country(events, sep=SEPARATOR):
 
         for event in container[country]:
             print(event)
+
+

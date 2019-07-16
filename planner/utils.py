@@ -15,9 +15,8 @@
  """
 
 import datetime
-import time
 import json
-
+from collections import defaultdict
 import holidays
 from config import ARTISTS
 
@@ -47,6 +46,9 @@ class Day:
     def __repr__(self):
         return f'{self.__class__.__name__}({self.date}, {self.event}, {self.nonwork})'
 
+    def __str__(self):
+        return '{} - {:<1} - {:<1}'.format(self.date, True if self.event else False, self.nonwork)
+
 
 class Event:
     """
@@ -65,28 +67,11 @@ class Event:
         self.city = city
 
     def __str__(self):
-        return f'{self.date}, {self.artist} in {self.city}, {self.country}'
+        return f'{self.date} - {self.artist} in {self.city}, {self.country}'
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.artist}, {self.artists}, {self.display},' \
                f' {self.date},{self.type}, {self.uri}, {self.venue}, {self.country}, {self.city})'
-
-def timeit(func):
-    """
-    Maybe not bad implemented timer
-    :param func:
-    :return:
-    """
-
-    def timed():
-        time_start = time.time()
-        result = func()
-        time_end = time.time()
-        waisted_seconds = (time_end-time_start) % 60
-        print('{} took {:.2} seconds'.format(func.__name__, waisted_seconds))
-        return result
-
-    return timed
 
 
 def wrap_events(events, skip_ctry):
@@ -136,17 +121,48 @@ def load_artists(arts=ARTISTS):
         return json.load(static_artists)
 
 
-def get_nonwork(year=datetime.datetime.today().year):
-    """
-    To be defined
-    :param year:
-    :return:
-    """
-    _holidays = [dt for dt in holidays.UA(years=year)]
-    first_day = datetime.date(year, 1, 1)
-    weekdays = [(first_day + datetime.timedelta(i)) for i in range(370)
-                if (first_day + datetime.timedelta(i)).weekday() in (5, 6)
-                and (first_day + datetime.timedelta(i)).year == year]
-    non_working_days = _holidays + weekdays
+def is_nonwork(date):
+    ua_holidays = holidays.UA(years=2019)
 
-    return sorted(non_working_days)
+    if date in ua_holidays:
+        return True
+
+    if date.weekday() in (5, 6):
+        return True
+
+    return False
+
+
+def wrap_days(dates, map):
+    data = list()
+
+    for date in dates:
+        _is_nonwork = is_nonwork(date)
+
+        if date in map:
+            res = [Day(date, event, _is_nonwork) for event in map[date]]
+
+        else:
+            res = [Day(date, False, _is_nonwork)]
+
+        data.extend(res)
+
+    return data
+
+
+def build_events_map(events):
+    event_map = defaultdict(list)
+
+    for event in events:
+        event_map[event.date].append(event)
+
+    return event_map
+
+
+def generate_dates(start, end):
+    step = datetime.timedelta(days=1)
+
+    while start <= end:
+        yield start
+        start += step
+
