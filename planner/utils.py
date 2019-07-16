@@ -122,12 +122,18 @@ def load_artists(arts=ARTISTS):
 
 
 def is_nonwork(date):
-    ua_holidays = holidays.UA(years=2019)
+    ua_holidays = holidays.UA(years=date.year)
 
     if date in ua_holidays:
         return True
 
     if date.weekday() in (5, 6):
+        return True
+
+    if date.weekday() == 0 and date-datetime.timedelta(days=1) in ua_holidays:
+        return True
+
+    if date.weekday() == 0 and date-datetime.timedelta(days=2) in ua_holidays:
         return True
 
     return False
@@ -165,4 +171,6 @@ def generate_dates(start, end):
     while start <= end:
         yield start
         start += step
+
+
 
