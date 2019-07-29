@@ -15,6 +15,8 @@ from collections import defaultdict
 
 from config import SEPARATOR
 
+import utils as ut
+
 
 def view_by_artist(events, sep=SEPARATOR):
     """
@@ -32,7 +34,7 @@ def view_by_artist(events, sep=SEPARATOR):
         print(sep.format(artist))
 
         for event in container[artist]:
-            print(event.date)
+            print('{:<3} {:<10} {}'.format(ut.is_nonwork(event.date), event.date.strftime('%A'), event))
 
 
 def view_by_month(events, sep=SEPARATOR):
@@ -52,7 +54,7 @@ def view_by_month(events, sep=SEPARATOR):
         print(sep.format(month))
 
         for event in container[month]:
-            print(event)
+            print('{:<3} {:<10} {}'.format(ut.is_nonwork(event.date), event.date.strftime('%A'), event))
 
 
 def view_by_country(events, sep=SEPARATOR):
@@ -71,6 +73,6 @@ def view_by_country(events, sep=SEPARATOR):
         print(sep.format(country))
 
         for event in container[country]:
-            print(event)
+            print('{:<3} {:<10} {}'.format(ut.is_nonwork(event.date), event.date.strftime('%A'), event))
 
 
