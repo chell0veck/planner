@@ -36,15 +36,20 @@ class Artist:
 
 class Day:
     """
-    To be defined still
+    date: datetime.date
+    event: Event(...)
+    nonwork: bool
     """
+
     def __init__(self, date, event, nonwork):
         self.date = date
         self.event = event
         self.nonwork = nonwork
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({self.date}, {self.event}, {self.nonwork})'
+        return '{}({} ,{:<1}, {:<1})'.format(self.__class__.__name__,
+                                             self.date, True if self.event else False, self.nonwork)
+        # return f'{self.__class__.__name__}({self.date}, {self.event}, {self.nonwork})'
 
     def __str__(self):
         return '{} ,{:<1}, {:<1}'.format(self.date, True if self.event else False, self.nonwork)
@@ -156,21 +161,33 @@ def wrap_days(dates, map):
     return data
 
 
-def build_events_map(events):
-    event_map = defaultdict(list)
+def generate_raw_frames(start, end, max_len=18):
+    frames = []
 
-    for event in events:
-        event_map[event.date].append(event)
+    for i in range((end - start).days - max_len):
+        f_start = start + datetime.timedelta(days=i)
 
-    return event_map
+        for b in range(3, max_len + 1):
+            f_end = f_start + datetime.timedelta(days=b)
+
+            frame = adjust_frame(f_start, f_end)
+
+            if frame not in frames:
+                frames.append(frame)
+
+    return frames
 
 
-def generate_dates(start, end):
-    step = datetime.timedelta(days=1)
+def adjust_frame(start, end):
 
-    while start <= end:
-        yield start
-        start += step
+    while is_nonwork(start - datetime.timedelta(1)):
+        start -= datetime.timedelta(1)
+
+    while is_nonwork(end + datetime.timedelta(1)):
+        end += datetime.timedelta(1)
+
+    return start, end
 
 
-
+# todo: correct nonwork() check function
+# >> print(is_nonwork(datetime.date(2020, 6, 7))) True
