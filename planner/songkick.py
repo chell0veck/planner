@@ -20,7 +20,7 @@ import json
 
 import requests
 
-from utils import wrap_artists, wrap_events
+from utils import wrap_artists, wrap_events, Artist
 from config import SGK_API_URL, SGK_API_KEY, SKIP_COUNTRIES, ARTISTS, CACHE_DATA, CACHE_TIME
 
 
@@ -38,14 +38,15 @@ def get_events(artists):
     for artist in artists:
         url = SGK_API_URL.format(artist.sid, SGK_API_KEY)
         data = requests.get(url).json()
-        data_valid = _response_is_valid(data)
-
-        if data_valid:
-            events = data['resultsPage']['results']['event']
-            wrapped = [[artist.name, event] for event in events]
-            out.extend(wrapped)
-
-    return out
+        print(data)
+        # data_valid = _response_is_valid(data)
+        #
+        # if data_valid:
+        #     events = data['resultsPage']['results']['event']
+        #     wrapped = [[artist.name, event] for event in events]
+        #     out.extend(wrapped)
+    #
+    # return out
 
 
 def load_events():
@@ -135,3 +136,6 @@ def _cache_is_stale():
         return True
 
     return False
+
+mono_artist = Artist('Mono', '201140')
+mono_events = get_events([mono_artist])

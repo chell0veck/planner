@@ -12,10 +12,11 @@ import cProfile
 
 
 events = sk.load_events()
-_start = datetime.date.today()
-_end = max(event.date for event in events)
-dates = ut.generate_dates(_start, _end)
-emap = ut.build_events_map(events)
-data = ut.wrap_days(dates, emap)
-
-md.view_by_month(events)
+print(events)
+# _start = datetime.date.today()
+# _end = max(event.date for event in events)
+# dates = ut.generate_dates(_start, _end)
+# emap = ut.build_events_map(events)
+# data = ut.wrap_days(dates, emap)
+#
+# md.view_by_month(events)
