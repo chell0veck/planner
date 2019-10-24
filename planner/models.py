@@ -1,78 +1,23 @@
-"""
-Defines actual modules to view events of interest.
-It's actually most important here - logic.
-
-Functions:
-    view_by_artist
-    view_by_month
-    view_by_county
-
-"""
 
 import datetime
-
+from itertools import groupby
 from collections import defaultdict
-
-from config import SEPARATOR
-
+import json
+from config import SEPARATOR, SKIP_COUNTRIES
 import utils as ut
 
 
-def view_by_artist(events, sep=SEPARATOR):
-    """
-    Print sorted list of Event object sorted by artist
-    :param events: list of Event objects
-    :param sep: str (default header)
-    :return: None
-    """
-    container = defaultdict(list)
+def view_by_group(events, group, skip=True):
+    contain = defaultdict(list)
+
+    if skip:
+        skip_ctrys = json.load(open(SKIP_COUNTRIES))
+        events = [event for event in events if event['country'] not in skip_ctrys]
 
     for event in events:
-        container[event.artist].append(event)
+        contain[event[group]].append(event)
 
-    for artist in container:
-        print(sep.format(artist))
-
-        for event in container[artist]:
-            print('{:<3} {:<10} {}'.format(ut.is_nonwork(event.date), event.date.strftime('%A'), event))
-
-
-def view_by_month(events, sep=SEPARATOR):
-    """
-    Print sorted list of Event object sorted by month
-    :param events: list of Event objects
-    :param sep: str (default header)
-    :return: None
-    """
-    container = defaultdict(list)
-
-    for event in events:
-        month = datetime.date.strftime(event.date, '%B')
-        container[month].append(event)
-
-    for month in container:
-        print(sep.format(month))
-
-        for event in container[month]:
-            print('{:<3} {:<10} {}'.format(ut.is_nonwork(event.date), event.date.strftime('%A'), event))
-
-
-def view_by_country(events, sep=SEPARATOR):
-    """
-    Print sorted list of Event object sorted by country
-    :param events: list of Event objects
-    :param sep: str (default header)
-    :return: None
-    """
-    container = defaultdict(list)
-
-    for event in events:
-        container[event.country].append(event)
-
-    for country in container:
-        print(sep.format(country))
-
-        for event in container[country]:
-            print('{:<3} {:<10} {}'.format(ut.is_nonwork(event.date), event.date.strftime('%A'), event))
-
-
+    for group, values in contain.items():
+        print('\n---{}---'.format(group))
+        for v in sorted(values, key=lambda e: e['date']):
+            print(v['artist'], v['date'], v['city'])
