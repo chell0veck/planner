@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 import datetime
 from itertools import groupby
@@ -21,3 +22,4 @@ def view_by_group(events, group, skip=True):
         print('\n---{}---'.format(group))
         for v in sorted(values, key=lambda e: e['date']):
             print(v['artist'], v['date'], v['city'])
+        print('total: {}'.format(len(values)))
