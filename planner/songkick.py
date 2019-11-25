@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import requests
 from utils import load_artist_from_file
-from config import SGK_API_URL, SGK_API_KEY, CACHE_DATA, CACHE_TIME
+from config import SGK_API_URL, SGK_API_KEY, CACHE_DATA, CACHE_TIME, SKIP_COUNTRIES
 
 
 def _cache_is_stale():
@@ -70,9 +70,14 @@ def dump_cache(cache_data):
         c_t.write(str(timestamp.utcnow()))
 
 
-def load_cache():
+def load_cache(skip=True):
     with open(CACHE_DATA) as cache_data:
-        return json.load(cache_data)
+        events = json.load(cache_data)
+
+    if skip:
+        skip_ctrys = json.load(open(SKIP_COUNTRIES))
+        events = [event for event in events if event['country'] not in skip_ctrys]
+    return events
 
 
 def refresh_cache():
@@ -81,9 +86,10 @@ def refresh_cache():
     dump_cache(events)
 
 
-def load_events():
+def load_events(skip=True):
     cache_is_stale = _cache_is_stale()
+
     if cache_is_stale:
         refresh_cache()
-    events = load_cache()
+    events = load_cache(skip)
     return events
